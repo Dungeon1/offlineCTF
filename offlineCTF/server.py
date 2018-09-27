@@ -43,7 +43,6 @@ config = None
 
 descAllowedTags = bleach.ALLOWED_TAGS + ['br', 'pre']
 
-
 def login_required(f):
     """Ensures that an user is logged in"""
 
@@ -69,7 +68,7 @@ def admin_required(f):
     return decorated_function
 
 def get_user():
-    
+    db = dataset.connect(config['db'])
 
     login = 'user_id' in session
     if login:
@@ -78,7 +77,7 @@ def get_user():
     return None
 
 def get_task(tid):
-    
+    db = dataset.connect(config['db'])
 
     task = db.query("SELECT t.*, c.name cat_name FROM tasks t JOIN categories c on c.id = t.category WHERE t.id = :tid",
             tid=tid)
@@ -86,7 +85,7 @@ def get_task(tid):
     return task.next()
 
 def get_flags():
-    
+    db = dataset.connect(config['db'])
 
     flags = db.query('''select f.task_id from flags f
         where f.user_id = :user_id''',
@@ -94,7 +93,7 @@ def get_flags():
     return [f['task_id'] for f in list(flags)]
 
 def get_total_completion_count():
-
+    db = dataset.connect(config['db'])
     c = db.query("select t.id, count(t.id) count from tasks t join flags f on t.id = f.task_id group by t.id;")
 
     res = {}
@@ -134,7 +133,7 @@ def noerror(msg):
     return make_response(render)
 
 def session_login(username):
-    
+    db = dataset.connect(config['db'])
     user = db['users'].find_one(username=username)
     session['user_id'] = user['id']
 
@@ -147,7 +146,7 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
 
 @app.route('/login', methods = ['POST'])
 def login():
-    
+    db = dataset.connect(config['db'])
 
     from werkzeug.security import check_password_hash
 
@@ -177,6 +176,7 @@ def checkRecaptcha(response, secretkey):
         return False
 @app.route('/register')    
 def register():
+    db = dataset.connect(config['db'])
     userCount = db['users'].count()
     if datetime.datetime.today() < config['startTime'] and userCount != 0:
         return redirect('/error/not_started')
@@ -187,7 +187,7 @@ def register():
 
 @app.route('/register/submit', methods = ['POST','GET'])
 def register_submit():
-    
+    db = dataset.connect(config['db'])
 
     from werkzeug.security import generate_password_hash
     username = request.form['user']
@@ -220,7 +220,7 @@ def register_submit():
         return redirect('error/empty_user')
 
     new_user = dict(username=username, password=generate_password_hash(password),
-		isAdmin=isAdmin,
+        isAdmin=isAdmin,
                 isHidden=isHidden,
 		region=region,
 		school=school,
@@ -235,7 +235,7 @@ def register_submit():
 @app.route('/tasks')
 @login_required
 def tasks():
-    
+    db = dataset.connect(config['db'])
 
     user = get_user()
     userCount = db['users'].count(isHidden=0)
@@ -300,6 +300,7 @@ def addcatsubmit():
     except KeyError:
         return redirect('/error/form')
     else:
+        db = dataset.connect(config['db'])
         categories = db['categories']
         categories.insert(dict(name=name))
         return redirect('/tasks')
@@ -307,6 +308,7 @@ def addcatsubmit():
 @app.route('/editcat/<id>/', methods=['GET'])
 @admin_required
 def editcat(id):
+    db = dataset.connect(config['db'])
     user = get_user()
     category = db['categories'].find_one(id=id)
     render = render_template('frame.html', lang=lang, user=user, category=category, page='editcat.html')
@@ -320,6 +322,7 @@ def editcatsubmit(catId):
     except KeyError:
         return redirect('/error/form')
     else:
+        db = dataset.connect(config['db'])
         categories = db['categories']
         categories.update(dict(name=name, id=catId), ['id'])
         return redirect('/tasks')
@@ -327,6 +330,7 @@ def editcatsubmit(catId):
 @app.route('/editcat/<catId>/delete', methods=['GET'])
 @admin_required
 def deletecat(catId):
+    db = dataset.connect(config['db'])
     category = db['categories'].find_one(id=catId)
 
     user = get_user()
@@ -336,12 +340,14 @@ def deletecat(catId):
 @app.route('/editcat/<catId>/delete', methods=['POST'])
 @admin_required
 def deletecatsubmit(catId):
+    db = dataset.connect(config['db'])
     db['categories'].delete(id=catId)
     return redirect('/tasks')
 
 @app.route('/addtask/<cat>/', methods=['GET'])
 @admin_required
 def addtask(cat):
+    db = dataset.connect(config['db'])
     category = db['categories'].find_one(id=cat)
 
     user = get_user()
@@ -363,6 +369,7 @@ def addtasksubmit(cat):
         return redirect('/error/form')
 
     else:
+        db = dataset.connect(config['db'])
         tasks = db['tasks']
         task = dict(
                 name=name,
@@ -388,6 +395,7 @@ def addtasksubmit(cat):
 @app.route('/tasks/<tid>/edit', methods=['GET'])
 @admin_required
 def edittask(tid):
+    db = dataset.connect(config['db'])
     user = get_user()
 
     task = db["tasks"].find_one(id=tid);
@@ -411,6 +419,7 @@ def edittasksubmit(tid):
         return redirect('/error/form')
 
     else:
+        db = dataset.connect(config['db'])
         tasks = db['tasks']
         task = tasks.find_one(id=tid)
         task['id']=tid
@@ -446,6 +455,7 @@ def edittasksubmit(tid):
 @app.route('/tasks/<tid>/delete', methods=['GET'])
 @admin_required
 def deletetask(tid):
+    db = dataset.connect(config['db'])
     tasks = db['tasks']
     task = tasks.find_one(id=tid)
 
@@ -456,13 +466,14 @@ def deletetask(tid):
 @app.route('/tasks/<tid>/delete', methods=['POST'])
 @admin_required
 def deletetasksubmit(tid):
+    db = dataset.connect(config['db'])
     db['tasks'].delete(id=tid)
     return redirect('/tasks')
 
 @app.route('/tasks/<tid>/')
 @login_required
 def task(tid):
-    
+    db = dataset.connect(config['db'])
 
     user = get_user()
 
@@ -485,7 +496,7 @@ def task(tid):
 @app.route('/submit/<tid>/<flag>')
 @login_required
 def submit(tid, flag):
-    
+    db = dataset.connect(config['db'])
     log_flag = open('log_flag_ip.txt', 'a')
     user = get_user()
 
@@ -494,11 +505,11 @@ def submit(tid, flag):
     task_done = task['id'] in flags
     result = {'success': False}
     ip = request.remote_addr
-  
+
     log_flag.write(" Submit flag from: "+user['username']+" "+flag+" "+task['flag']+" "+b64decode(flag).decode('utf-8')+" ip: {}".format(ip)+'\n')
     print ("Submit flag: ", flag, task['flag'], b64decode(flag).decode('utf-8'), "ip: {}".format(ip))
     if not task_done and task['flag'] ==  b64decode(flag).decode('utf-8'):
-		
+        
         timestamp = int(time.time()*1000)
         ip = request.remote_addr
         print ("flag correct submit from ip: {}".format(ip))
@@ -514,7 +525,7 @@ def submit(tid, flag):
     score = db.query('''select ifnull(sum(f.score), 0) as score  from users u left join flags f on u.id = f.user_id where u.username=:user_name''', user_name=user['username'])
     for row in score:
         score_user = row['score']
-		
+        
     
     isTop = user['isTop']
     if (score_user >= 1000) and isTop == 0:
@@ -526,7 +537,7 @@ def submit(tid, flag):
 @login_required
 def scoreboard():
     """Displays the scoreboard"""
-
+    db = dataset.connect(config['db'])
     user = get_user()
     scores = db.query('''select u.username, u.region, ifnull(sum(f.score), 0) as score,
         max(timestamp) as last_submit from users u left join flags f
@@ -544,7 +555,7 @@ def scoreboard():
 @login_required
 def scoreboard_school():
     """Displays the scoreboard"""
-
+    db = dataset.connect(config['db'])
     user = get_user()
     scores = db.query('''select u.username, u.region, ifnull(sum(f.score), 0) as score,
         max(timestamp) as last_submit from users u left join flags f
@@ -561,6 +572,7 @@ def scoreboard_school():
 
 @app.route('/scoreboard.json')
 def scoreboard_json():
+    db = dataset.connect(config['db'])
     scores = db.query('''select u.username, ifnull(sum(f.score), 0) as score,
         max(timestamp) as last_submit from users u left join flags f
         on u.id = f.user_id where u.isHidden = 0 group by u.username
@@ -635,8 +647,6 @@ lang = json.loads(lang_str)
 lang = lang[config['language']]
 SITE_KEY = '6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40' #-удаленный
 SECRET_KEY = '6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f' #-удаленный
-
-db = dataset.connect(config['db'])
 
 
 
