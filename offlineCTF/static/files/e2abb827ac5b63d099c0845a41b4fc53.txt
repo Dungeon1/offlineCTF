@@ -1,6 +1,0 @@
-cipher: Serpent 
-mode : ECB
-msg = 0x35757033725f6331706833725f3a2d29
-key = '*********c*qb*!*' //flag
-cipher_text = 0xcbe67e913ce43f7e50257b2d4adb1e0842c8bf4f563a590aac38b40c341ba0f2
-
