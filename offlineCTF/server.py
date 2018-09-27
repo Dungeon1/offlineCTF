@@ -203,9 +203,11 @@ def register_submit():
     if checkRecaptcha(response,SECRET_KEY):   
         if not username:
             return redirect('/error/empty_user')
-
-        if user_found:
+        elif user_found:
             return redirect('/error/already_registered')
+        else:
+            from emailSend import emailRegistrationSend
+            emailSend = emailRegistrationSend(username, password, email, myEmail, myEmailPass)
 
 
     
