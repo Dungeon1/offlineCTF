@@ -205,6 +205,7 @@ def register_submit():
     from werkzeug.security import generate_password_hash
     username = request.form['user']
     password = request.form['password']
+    email = request.form['email']
     region = request.form['region']
     school = request.form['school']
     response = request.form.get('g-recaptcha-response')
@@ -233,7 +234,8 @@ def register_submit():
 		isAdmin=isAdmin,
                 isHidden=isHidden,
 		region=region,
-		school=school)
+		school=school,
+                email=email)
     db['users'].insert(new_user)
 
     

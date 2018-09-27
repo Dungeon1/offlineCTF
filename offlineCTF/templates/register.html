@@ -1,7 +1,7 @@
 <div class="landing-page container">
 <script src='https://www.google.com/recaptcha/api.js'></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<div class="row">
+	<div id="cd-signup">
 		<form role="form" action="/register/submit" method="post" enctype="multipart/form-data">
 			<div class="task-box col-md-6 col-md-offset-3">
 				<h1>Регистрация команды</h1>
@@ -17,11 +17,16 @@
 				<input type="password" class="form-control" name="password" required="required">
                 </div>
                 </div>
+				<div class="contener_logo_pas">
                 <div class="contener_email_reg">
+				<div>
+				<label>Email:</label>
+				<input type="text" class="form-control" name="email" required="required">
+				</div>
+				</div>
                 <div>
 				<label>Регион:</label>
 				<input type="region" class="form-control" name="region" required="required">
-				
                 </div>
                 </div>
 				<label>Преимущественный состав команды:</label><br>
