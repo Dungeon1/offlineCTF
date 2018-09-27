@@ -1,4 +1,5 @@
 
+
 """server.py -- the main flask server module"""
 
 import dataset
@@ -43,12 +44,6 @@ config = None
 
 descAllowedTags = bleach.ALLOWED_TAGS + ['br', 'pre']
 
-def check_recapcha(response, remoteip):
-    return json.loads(requests.post('https://www.google.com/recaptcha/api/siteverify', data=dict(
-        secret='6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f',
-        response=response.get('g-recaptcha-response'),
-        remoteip=remoteip
-    )).text)['success']
 class BaseForm(Form):
     def validate(self):
         success = super(Form, self).validate()
@@ -181,22 +176,29 @@ def login():
         return redirect('/tasks')
     
     return redirect('/error/invalid_credentials')
-
-@app.route('/register')
+def checkRecaptcha(response, secretkey):
+    url = 'https://www.google.com/recaptcha/api/siteverify?'
+    url = url + 'secret=' +secretkey
+    url = url + '&response=' +response
+    try:
+        jsonobj = json.loads((urllib.request.urlopen(url).read()).decode("utf-8"))
+        if jsonobj['success']:
+            return True
+        else:
+            return False
+    except Exception as e:
+        return False
+@app.route('/register')    
 def register():
-    """Displays the register form"""
-   # form = ArticleForm(request.form)
     userCount = db['users'].count()
     if datetime.datetime.today() < config['startTime'] and userCount != 0:
         return redirect('/error/not_started')
-    if not :
-        return redirect('/error/invalid_credentials')
     
     render = render_template('frame.html', lang=lang,
-        page='register.html', login=False)
+    page='register.html', login=False)
     return make_response(render)
 
-@app.route('/register/submit', methods = ['GET', 'POST'])
+@app.route('/register/submit', methods = ['POST','GET'])
 def register_submit():
     
 
@@ -205,24 +207,27 @@ def register_submit():
     password = request.form['password']
     region = request.form['region']
     school = request.form['school']
-    
-    if not username:
-        return redirect('/error/empty_user')
-
+    response = request.form.get('g-recaptcha-response')
     user_found = db['users'].find_one(username=username)
-    if user_found:
-        return redirect('/error/already_registered')
-
     isAdmin = False
     isHidden = False
     userCount = db['users'].count()
-    
-    if userCount == 0:
-        isAdmin = True
-        isHidden = True
-    elif datetime.datetime.today() < config['startTime']:
-        return redirect('/noerror/register_complete')
+    if checkRecaptcha(response,SECRET_KEY):   
+        if not username:
+            return redirect('/error/empty_user')
 
+        if user_found:
+            return redirect('/error/already_registered')
+
+
+    
+        if userCount == 0:
+            isAdmin = True
+            isHidden = True
+        elif datetime.datetime.today() < config['startTime']:
+            return redirect('/noerror/register_complete')
+    else:
+        return redirect('error/empty_user')
 
     new_user = dict(username=username, password=generate_password_hash(password),
 		isAdmin=isAdmin,
@@ -637,7 +642,8 @@ lang = json.loads(lang_str)
 
 
 lang = lang[config['language']]
-
+SITE_KEY = '6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40' #-удаленный
+SECRET_KEY = '6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f' #-удаленный
 
 db = dataset.connect(config['db'])
 
