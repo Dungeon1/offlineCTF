@@ -34,6 +34,8 @@ from flask import session
 from flask import url_for
 from flask import Response
 
+
+
 app = Flask(__name__, static_folder='static', static_url_path='')
 db = None
 lang = None
@@ -190,6 +192,7 @@ def register_submit():
     from werkzeug.security import generate_password_hash
     username = request.form['user']
     password = request.form['password']
+    email = request.form['email']
     region = request.form['region']
     school = request.form['school']
     response = request.form.get('g-recaptcha-response')
@@ -217,9 +220,9 @@ def register_submit():
     new_user = dict(username=username, password=generate_password_hash(password),
         isAdmin=isAdmin,
                 isHidden=isHidden,
-        region=region,
-        school=school)
-
+		region=region,
+		school=school,
+                email=email)
     db['users'].insert(new_user)
 
     
