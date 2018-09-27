@@ -34,8 +34,7 @@ from flask import session
 from flask import url_for
 from flask import Response
 
-from wtforms import Form
-from wtforms import StringField
+
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 db = None
@@ -44,19 +43,7 @@ config = None
 
 descAllowedTags = bleach.ALLOWED_TAGS + ['br', 'pre']
 
-class BaseForm(Form):
-    def validate(self):
-        success = super(Form, self).validate()
 
-        if success and 'g-recaptcha-response' in request.form:
-            success = check_recapcha(
-                request.form,
-                request.remote_addr
-            )
-
-        return success
-class ArticleForm(BaseForm):
-    name = StringField('name')
 def login_required(f):
     """Ensures that an user is logged in"""
 
