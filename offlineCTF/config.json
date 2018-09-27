@@ -1,0 +1,17 @@
+{
+    "secret_key": "nice_day",
+
+    "host": "0.0.0.0",
+    "port": 81,
+
+	"isProxied": false,
+
+	"startTime": "3-31-16 8:00AM",
+
+    "db": "sqlite:///ctf.db",
+
+    "language_file": "lang.json",
+    "language": "english",
+
+    "debug": false
+}

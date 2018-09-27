@@ -1,0 +1,82 @@
+Хуярим Nginx
+Уставновка Nginx:
+	sudo apt-get install nginx
+
+Удаляет все кроме файлов конфигурации
+	sudo apt-get remove nginx nginx-common
+Удаляет все
+	sudo apt-get purge nginx nginx-common
+
+cd/ - перейти в корневую папку "Компьютер"
+nano - текстовый редактор терминала
+touch - создать файл в дериктории
+
+В папке etc/nginx/site-available добавляем свой фйл со своей конфигурацией spacectf.conf
+
+	server{
+		listen 80;
+		server_name spacectf.fareastctf.ru;
+		location /{
+		        include uwsgi_params;
+		        uwsgi_pass 127.0.0.1:8080;
+		}
+		location /static{
+		        root /var/www/web/static;
+		}
+
+	}
+
+	server{
+		listen 80;
+		server_name fareastctf.ru
+		location /{
+		        proxy_pass http://127.0.0.1:8081/;
+		}
+	}
+далее делаем ссылку на наш конфиг в sites-enabled
+rm - команда на удаление файла
+ln -s создает ссылку на объект
+	sudo ln -s /etc/nginx/sites-available/spacectf.conf /etc/nginx/sites-enabled/spacectf.conf
+--откуда взять объект и куда вставить ссылку--
+
+Ставим uwsgi
+	sudo apt-get install uwsgi
+
+Создать в папке /etc/uwsgi/apps-available
+файл spacectf.ini $touch spacectf.ini
+	/etc/uwsgi/apps-available$ touch spacectf.ini
+
+В этом файле прописываем 
+	[uwsgi]
+	socket=127.0.0.1:8080
+	base=/var/www/web
+	chdir=%(base)
+	uid=www-data
+	gid=www-data
+	module=server:app
+	processes=2
+
+в /etc/uwsgi/apps-enabled создать ссылку на файл spacectf.ini
+	sudo ln -s /etc/uwsgi/apps-available/spacectf.ini /etc/uwsgi/apps-enabled/spacectf.ini
+
+Для файла web который лежит в папке /var/www/web необходимо зменить пользователя(владельца)
+	sudo chown www-data:www-data -R .
+Проверить что пользователи сменились 
+	ls -la
+
+Для питона3 необходимо установить расширение uwsgi
+	sudo pip3 install uwsgi
+
+Запуск nginx 
+	service nginx start
+
+
+
+
+
+
+
+
+
+
+
