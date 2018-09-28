@@ -5,6 +5,8 @@
             "toggle": "Toggle navigation",
             "login": "Вход",
             "register": "Регистрация",
+            "forgot_password": "Забыли пароль?",
+            "recover_password": "Восстановить",
             "logged_in": "Пользователь",
             "logout": "Выход"
         },
