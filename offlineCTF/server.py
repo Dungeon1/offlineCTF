@@ -200,6 +200,11 @@ def register_submit():
     isAdmin = False
     isHidden = False
     userCount = db['users'].count()
+
+    #TODO: Создать почту и вписать данные
+    myEmail = None
+    myEmailPass = None
+
     if checkRecaptcha(response,SECRET_KEY):   
         if not username:
             return redirect('/error/empty_user')
@@ -221,10 +226,10 @@ def register_submit():
 
     new_user = dict(username=username, password=generate_password_hash(password),
         isAdmin=isAdmin,
-                isHidden=isHidden,
+        isHidden=isHidden,
 		region=region,
 		school=school,
-                email=email)
+        email=email)
     db['users'].insert(new_user)
 
     

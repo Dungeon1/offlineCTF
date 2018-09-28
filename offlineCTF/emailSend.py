@@ -6,7 +6,9 @@ from flask import redirect
 from flask import url_for
 
 def emailRegistrationSend(username, password, toaddr, me, user_passwd):
-    you = toaddr
+    if me == None: 
+        return
+
     server = 'smtp.mail.ru' # Сервер отпраитель
     port = 587 # возможные порты: 587, 465 (25)
     user_name=me # Адрес отправителя
@@ -56,7 +58,6 @@ def emailRegistrationSend(username, password, toaddr, me, user_passwd):
 def emailForgotPassword(username, email, randomPassword, me, user_passwd):
     print("Зашел в функцию отправки нового пароля")
     toaddr = str(email)  #Адрес получателя
-    you = toaddr
     server = 'smtp.mail.ru' # Сервер отпраитель
     port = 587 # возможные порты: 587, 465, (25)
     user_name=me  # Адрес отправителя
@@ -97,7 +98,6 @@ def emailForgotPassword(username, email, randomPassword, me, user_passwd):
 def emailToOrg(username, email, text_of_massage, EmailSenderToOrg, EmailSenderToOrgPass, EmailReceiverOrg):
     toaddr = str(EmailReceiverOrg) # Получатель
     me = str(EmailSenderToOrg) # Отправитель
-    you = toaddr
     server = 'smtp.mail.ru' # Сервер отпраитель
     port = 587 # возможные порты: 587, 465 (25)
     user_name=me # Адрес отправителя
