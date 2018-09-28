@@ -174,6 +174,7 @@ def checkRecaptcha(response, secretkey):
             return False
     except Exception as e:
         return False
+
 @app.route('/register')    
 def register():
     db = dataset.connect(config['db'])
