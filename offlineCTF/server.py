@@ -641,6 +641,12 @@ lang = json.loads(lang_str)
 
 
 lang = lang[config['language']]
+<<<<<<< HEAD
+=======
+SITE_KEY = '6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40' #-удаленный
+SECRET_KEY = '6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f' #-удаленный
+
+>>>>>>> f553aa4d27e1bcd1d2af70093e5a6270bee1330b
 
 SITE_KEY = '6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40' #-Капча
 SECRET_KEY = '6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f' #-Капча
