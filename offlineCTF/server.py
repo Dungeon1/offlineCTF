@@ -641,6 +641,7 @@ lang = json.loads(lang_str)
 
 
 lang = lang[config['language']]
+#Конфиги
 SITE_KEY = '6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40' #-Капча
 SECRET_KEY = '6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f' #-Капча
 #Мыло с которого отправляем
