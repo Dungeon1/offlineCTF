@@ -170,6 +170,7 @@ def checkRecaptcha(response, secretkey):
             return False
     except Exception as e:
         return False
+
 @app.route('/register')    
 def register():
     db = dataset.connect(config['db'])
@@ -196,6 +197,7 @@ def register_submit():
     isAdmin = False
     isHidden = False
     userCount = db['users'].count()
+
     if checkRecaptcha(response,SECRET_KEY):   
         if not username:
             return redirect('/error/empty_user')
@@ -217,10 +219,10 @@ def register_submit():
 
     new_user = dict(username=username, password=generate_password_hash(password),
         isAdmin=isAdmin,
-                isHidden=isHidden,
+        isHidden=isHidden,
 		region=region,
 		school=school,
-                email=email)
+        email=email)
     db['users'].insert(new_user)
 
     
