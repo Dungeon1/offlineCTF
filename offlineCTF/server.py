@@ -1,7 +1,3 @@
-
-
-"""server.py -- the main flask server module"""
-
 import dataset
 import json
 import random
@@ -223,7 +219,7 @@ def register_submit():
         elif datetime.datetime.today() < config['startTime']:
             return redirect('/noerror/register_complete')
     else:
-        return redirect('error/empty_user')
+        return redirect('error/bot')
 
     new_user = dict(username=username, password=generate_password_hash(password),
         isAdmin=isAdmin,
@@ -651,12 +647,13 @@ lang = json.loads(lang_str)
 
 
 lang = lang[config['language']]
-SITE_KEY = '6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40' #-удаленный
-SECRET_KEY = '6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f' #-удаленный
 
-
+SITE_KEY = '6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40' #-Капча
+SECRET_KEY = '6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f' #-Капча
+#Мыло с которого отправляем
+myEmail = 'fareastctf@mail.ru'
+myEmailPass = 'qwerty1234567890'
 
 
 if __name__ == '__main__':
     app.run(host=config['host'], port=config['port'],debug=config['debug'], threaded=False)
-
