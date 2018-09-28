@@ -202,14 +202,14 @@ def forgot_submit():
     from emailSend import emailForgotPassword
     import string
 
-    password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
+    password = ''.join(random.choices(string.ascii_uppercase + string.digits + string.ascii_lowercase, k=16))
+    randomPasswordHash=generate_password_hash(password)
+    newPas = db.query('''UPDATE users SET password = :newPass WHERE username= :username''', newPass=randomPasswordHash, username=username)
     emailForgotPassword(username, user["email"], password, myEmail, myEmailPass)
 
     user['password'] = generate_password_hash(password)
 
-    db['users'].delete(username=username)
-    db['users'].insert(user)
+
 
     return redirect('/')
 
