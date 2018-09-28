@@ -171,7 +171,9 @@ def checkRecaptcha(response, secretkey):
     except Exception as e:
         return False
 
-@app.route('/register')    
+
+""" Старый код для отдельной ссылки регистрации
+@app.route('/register')
 def register():
     db = dataset.connect(config['db'])
     userCount = db['users'].count()
@@ -180,11 +182,44 @@ def register():
     
     render = render_template('frame.html', lang=lang,
     page='register.html', login=False)
-    return make_response(render)
+    return make_response(render) 
+"""
+
+@app.route('/forgot/submit', methods = ['POST'])
+def forgot_submit():
+    db = dataset.connect(config['db'])
+    userCount = db['users'].count()
+    if datetime.datetime.today() < config['startTime'] and userCount != 0:
+        return redirect('/error/not_started')
+
+    username = request.form['user']
+    user = db['users'].find_one(username=username)
+
+    if user is None:
+        return redirect('/error/invalid_credentials')
+
+    from werkzeug.security import generate_password_hash
+    from emailSend import emailForgotPassword
+    import string
+
+    password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+    emailForgotPassword(username, user["email"], password, myEmail, myEmailPass)
+
+    user['password'] = generate_password_hash(password)
+
+    db['users'].delete(username=username)
+    db['users'].insert(user)
+
+    return redirect('/')
+
 
 @app.route('/register/submit', methods = ['POST','GET'])
 def register_submit():
     db = dataset.connect(config['db'])
+    userCount = db['users'].count()
+    if datetime.datetime.today() < config['startTime'] and userCount != 0:
+        return redirect('/error/not_started')
 
     from werkzeug.security import generate_password_hash
     username = request.form['user']
@@ -205,9 +240,7 @@ def register_submit():
             return redirect('/error/already_registered')
         else:
             from emailSend import emailRegistrationSend
-            emailSend = emailRegistrationSend(username, password, email, myEmail, myEmailPass)
-
-
+            emailReady = emailRegistrationSend(username, password, email, myEmail, myEmailPass)
     
         if userCount == 0:
             isAdmin = True
