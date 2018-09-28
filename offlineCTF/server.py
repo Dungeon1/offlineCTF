@@ -198,10 +198,6 @@ def register_submit():
     isHidden = False
     userCount = db['users'].count()
 
-    #TODO: Создать почту и вписать данные
-    myEmail = None
-    myEmailPass = None
-
     if checkRecaptcha(response,SECRET_KEY):   
         if not username:
             return redirect('/error/empty_user')
