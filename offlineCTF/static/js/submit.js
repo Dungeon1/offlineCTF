@@ -17,6 +17,7 @@ $("#flag-submission").click(function() {
     });
 });
 
+/** 
 var captcha = grecaptcha.getResponse();
  
 if (!captcha.length) {
@@ -26,11 +27,9 @@ if (!captcha.length) {
 }
  
 if ((formValid) && (captcha.length)) {
-  ...
   formData.append('g-recaptcha-response', captcha);
-  ...
 }  
 grecaptcha.reset();
 if ($data.msg) {
   $('#recaptchaError').text($data.msg);
-}
+}*/

@@ -13,5 +13,11 @@
     "language_file": "lang.json",
     "language": "english",
 
-    "debug": false
+    "debug": false,
+
+    "email": "fareastctf@mail.ru",
+    "email_password": "qwerty1234567890",
+
+    "CAPCHA_SITE_KEY": "6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40",
+    "CAPCHA_SECRET_KEY": "6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f"
 }

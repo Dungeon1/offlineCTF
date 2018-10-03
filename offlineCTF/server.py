@@ -7,9 +7,7 @@ import datetime
 import os
 import dateutil.parser
 import bleach
-
 import urllib.request
-
 
 from base64 import b64decode
 from base64 import b64encode
@@ -31,7 +29,6 @@ from flask import url_for
 from flask import Response
 
 
-
 app = Flask(__name__, static_folder='static', static_url_path='')
 db = None
 lang = None
@@ -40,9 +37,6 @@ config = None
 descAllowedTags = bleach.ALLOWED_TAGS + ['br', 'pre']
 
 def login_required(f):
-    """Ensures that an user is logged in"""
-
-
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
@@ -51,8 +45,6 @@ def login_required(f):
     return decorated_function
 
 def admin_required(f):
-    
-
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
@@ -146,7 +138,7 @@ def login():
 
     from werkzeug.security import check_password_hash
 
-    username = request.form['user']
+    username = request.form['user'].strip()
     password = request.form['password']
 
     user = db['users'].find_one(username=username)
@@ -158,6 +150,7 @@ def login():
         return redirect('/tasks')
     
     return redirect('/error/invalid_credentials')
+
 def checkRecaptcha(response, secretkey):
     url = 'https://www.google.com/recaptcha/api/siteverify?'
     url = url + 'secret=' +secretkey
@@ -168,22 +161,8 @@ def checkRecaptcha(response, secretkey):
             return True
         else:
             return False
-    except Exception as e:
+    except:
         return False
-
-
-""" Старый код для отдельной ссылки регистрации
-@app.route('/register')
-def register():
-    db = dataset.connect(config['db'])
-    userCount = db['users'].count()
-    if datetime.datetime.today() < config['startTime'] and userCount != 0:
-        return redirect('/error/not_started')
-    
-    render = render_template('frame.html', lang=lang,
-    page='register.html', login=False)
-    return make_response(render) 
-"""
 
 @app.route('/forgot/submit', methods = ['POST'])
 def forgot_submit():
@@ -202,14 +181,13 @@ def forgot_submit():
     from emailSend import emailForgotPassword
     import string
 
+    # Генерация нового пароля
     password = ''.join(random.choices(string.ascii_uppercase + string.digits + string.ascii_lowercase, k=16))
     randomPasswordHash=generate_password_hash(password)
-    newPas = db.query('''UPDATE users SET password = :newPass WHERE username= :username''', newPass=randomPasswordHash, username=username)
-    emailForgotPassword(username, user["email"], password, myEmail, myEmailPass)
+    db.query('''UPDATE users SET password = :newPass WHERE username= :username''', newPass=randomPasswordHash, username=username)
+    emailForgotPassword(username, password, user["email"], config['email'], config['email_password'])
 
     user['password'] = generate_password_hash(password)
-
-
 
     return redirect('/')
 
@@ -222,25 +200,28 @@ def register_submit():
         return redirect('/error/not_started')
 
     from werkzeug.security import generate_password_hash
-    username = request.form['user']
+    username = request.form['user'].strip()
     password = request.form['password']
-    email = request.form['email']
+    email = request.form['email'].strip()
     region = request.form['region']
     school = request.form['school']
     response = request.form.get('g-recaptcha-response')
     user_found = db['users'].find_one(username=username)
+    if not user_found:
+        user_found = db['users'].find_one(email=email)
+
     isAdmin = False
     isHidden = False
     userCount = db['users'].count()
 
-    if checkRecaptcha(response,SECRET_KEY):   
+    if checkRecaptcha(response, config['CAPCHA_SECRET_KEY']):   
         if not username:
             return redirect('/error/empty_user')
         elif user_found:
             return redirect('/error/already_registered')
         else:
             from emailSend import emailRegistrationSend
-            emailReady = emailRegistrationSend(username, password, email, myEmail, myEmailPass)
+            emailRegistrationSend(username, password, email, config['email'], config['email_password'])
     
         if userCount == 0:
             isAdmin = True
@@ -256,8 +237,8 @@ def register_submit():
 		region=region,
 		school=school,
         email=email)
-    db['users'].insert(new_user)
 
+    db['users'].insert(new_user)
     
     session_login(username)
     
@@ -269,11 +250,12 @@ def tasks():
     db = dataset.connect(config['db'])
 
     user = get_user()
+
     userCount = db['users'].count(isHidden=0)
     isAdmin = user['isAdmin']
 
     categories = db['categories']
-    catCount = categories.count()
+    #catCount = categories.count()
 
     flags = get_flags()
 
@@ -313,8 +295,6 @@ def tasks():
     render = render_template('frame.html', lang=lang, page='tasks.html',
         user=user, categories=categories, grid=grid)
     return make_response(render)
-
-
 
 @app.route('/addcat/', methods=['GET'])
 @admin_required
@@ -429,7 +409,7 @@ def edittask(tid):
     db = dataset.connect(config['db'])
     user = get_user()
 
-    task = db["tasks"].find_one(id=tid);
+    task = db["tasks"].find_one(id=tid)
     category = db["categories"].find_one(id=task['category'])
 
     render = render_template('frame.html', lang=lang, user=user,
@@ -557,11 +537,11 @@ def submit(tid, flag):
     for row in score:
         score_user = row['score']
         
-    
+    """
     isTop = user['isTop']
     if (score_user >= 1000) and isTop == 0:
-        top = db.query('''update users set isTop = 1 where username=:user_name''', user_name=user['username'])
-    
+        db.query('''update users set isTop = 1 where username=:user_name''', user_name=user['username'])
+    """
     return jsonify(result)
 
 @app.route('/scoreboard')
@@ -577,7 +557,6 @@ def scoreboard():
 
     scores = list(scores)
 
-    
     render = render_template('frame.html', lang=lang, page='scoreboard.html',
         user=user, scores=scores)
     return make_response(render)
@@ -594,7 +573,6 @@ def scoreboard_school():
         order by score desc, last_submit asc;''')
 
     scores = list(scores)
-
     
     render = render_template('frame.html', lang=lang, page='scoreboard_school.html',
         user=user, scores=scores)
@@ -603,6 +581,7 @@ def scoreboard_school():
 
 @app.route('/scoreboard.json')
 def scoreboard_json():
+    # Получаем json с результатами всех участников
     db = dataset.connect(config['db'])
     scores = db.query('''select u.username, ifnull(sum(f.score), 0) as score,
         max(timestamp) as last_submit from users u left join flags f
@@ -616,10 +595,8 @@ def scoreboard_json():
 @app.route('/about')
 @login_required
 def about():
-    """Displays the about menu"""
-
+    # Страница "О нас"
     user = get_user()
-
     
     render = render_template('frame.html', lang=lang, page='about.html',
         user=user)
@@ -630,7 +607,7 @@ def about():
 @login_required
 def category():
     user = get_user()
-    isAdmin = user['isAdmin']
+    #isAdmin = user['isAdmin']
     
     render = render_template('frame.html', lang=lang, page='category.html',
         user=user)
@@ -640,49 +617,33 @@ def category():
 @app.route('/logout')
 @login_required
 def logout():
-
-
     del session['user_id']
     return redirect('/')
 
 @app.route('/')
 def index():
-    """Displays the main page"""
-
+    # Главная страница
     user = get_user()
 
-    
     render = render_template('frame.html', lang=lang,
         page='main.html', user=user)
     return make_response(render)
 
-
-
-
+# Загружаем конфигурацию с config.json и устанавливаем переменные
 config_str = open('config.json', 'r',encoding="utf-8").read()
 config = json.loads(config_str)
 
 app.secret_key = config['secret_key']
-
 
 if config['startTime']:
     config['startTime'] = dateutil.parser.parse(config['startTime'])
 else:
     config['startTime'] = datetime.datetime.min
 
-
 lang_str = open(config['language_file'], 'r',encoding="utf-8").read()
 lang = json.loads(lang_str)
 
-
 lang = lang[config['language']]
-
-SITE_KEY = '6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40' #-Капча
-SECRET_KEY = '6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f' #-Капча
-#Мыло с которого отправляем
-myEmail = 'fareastctf@mail.ru'
-myEmailPass = 'qwerty1234567890'
-
 
 if __name__ == '__main__':
     app.run(host=config['host'], port=config['port'],debug=config['debug'], threaded=False)
