@@ -3,92 +3,46 @@ import email.mime.application
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-
-from letter import html
-
-def emailRegistrationSend(username, password, toaddr, me, user_passwd):
-    if me == None: 
-        return
-
-    server = 'smtp.mail.ru' # Сервер отпраитель
-    port = 587 # возможные порты: 587, 465 (25)
-    user_name=me # Адрес отправителя
-    user_passwd # Пароль отправителя
-    # Формируем заголовок письма
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = 'Заголовок письма'
-    msg['From'] = me
-    msg['To'] = toaddr # отправка 2-м адресаиам
-    # PDF attachment
-    #filename='script.sh'
-    #fp=open(filename,'rb')
-    #att = email.mime.application.MIMEApplication(fp.read(),_subtype="sh")
-    #fp.close()
-    #att.add_header('Content-Disposition','attachment',filename=filename)
-    #msg.attach(att)
-    # Формируем письмо
+def emailRegistrationSend(username, password, username_email, email, email_password):
     username = str(username)
     password = str(password)
-    new_html = html.format(username, password)
-    part1 = MIMEText(new_html, 'html')
-    #part3 = MIMEText('Содержимое приложенного файла')
-    msg.attach(part1)
-    #msg.attach(part3)
-    # Подключение
-    print('Подключение')
-    s = smtplib.SMTP(server, port)
-    s.ehlo()
-    s.starttls()
-    s.ehlo()
-    # Авторизация
-    print('Авторизация')
-    s.login(user_name, user_passwd)
-    # Отправка пиьма
-    print('Отправка письма')
-    try:
-        s.sendmail(me, toaddr, msg.as_string())
-        s.quit()
-        print('Получилось отправить')
-        return True
-    except:
-        print('Не получилось отправить')
-        return False
+    new_html = open('templates/letter.html', 'r', encoding="utf-8").read().format(username, password)
+    workingWithEmail(username, password, username_email, email, email_password, MIMEText(new_html, 'html'))
     
     
-def emailForgotPassword(username, email, randomPassword, me, user_passwd):
-    print("Зашел в функцию отправки нового пароля")
-    toaddr = str(email)  #Адрес получателя
-    server = 'smtp.mail.ru' # Сервер отпраитель
-    port = 587 # возможные порты: 587, 465, (25)
-    user_name=me  # Адрес отправителя
-    user_passwd # Пароль отправителя
-    # Формируем заголовок письма
-    msg = MIMEMultipart('mixed')
+def emailForgotPassword(username, password, username_email, email, email_password):
+    username = str(username)
+    password = str(password)
+    new_html = open('templates/letter_registration.html', 'r', encoding="utf-8").read().format(username, password)
+    workingWithEmail(username, password, username_email, email, email_password, MIMEText(new_html, 'html'))
+
+def workingWithEmail(username, password, username_email, email, email_password, final_message):
+    print('Работаем с почтой')
+
+    msg = MIMEMultipart('alternative')
     msg['Subject'] = 'Заголовок письма'
-    msg['From'] = me
-    msg['To'] = toaddr
-    # Формируем письмо
-    message = "Ваш username:" + str(username) + "\n" + " Ваш новый пароль:" + str(randomPassword) + "\n" + "Данный пароль сгенирирован случайно, его можно поменять на свой в личном кабинете"
-    print(message)
-    part1 = MIMEText('Смена пароля', 'plain')
-    part2 = MIMEText(message)
-    msg.attach(part1)
-    msg.attach(part2)
+    msg['From'] = email
+    msg['To'] = username_email
+    msg.attach(final_message)
+
     # Подключение
     s = smtplib.SMTP(server, port)
     s.ehlo()
     s.starttls()
     s.ehlo()
     # Авторизация
-    s.login(user_name, user_passwd)
+    s.login(email, email_password)
     # Отправка пиьма
-    print('Отправка письма')
+    print('Отправка письма...')
     try:
-        s.sendmail(me, toaddr, msg.as_string())
+        s.sendmail(email, username_email, msg.as_string())
         s.quit()
         print('Получилось отправить')
         return True
     except:
         print('Не получилось отправить')
         return False
-    print("Выходит из функции отправки письма")
+    print("Выходим из функции отправки письма")
+
+server = 'smtp.mail.ru'
+port = 587
