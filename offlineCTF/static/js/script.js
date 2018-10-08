@@ -1,54 +1,41 @@
 $(document).ready(function(){
-    $("#btn-open-register").click(openRegisterForm)
-
-    $("#btn-open-login").click(openLoginForm)
-
-    $("#modal-authorization").children("#bg-back").click(clearAll)
-
-    $("#toggler-register").click(function(){
-        clearAll();
-
-        openRegisterForm();
+    /** Для стилей */
+    $(".w-bg").hover(function(){
+        $(this).closest(".parent-bg").addClass("hovered")
+    }, function(){
+        $(this).closest(".parent-bg").removeClass("hovered")
     })
 
-    $("#toggler-login").click(function(){
-        clearAll();
+    /** Скрипт для шаблона header */
+    // Время
+    function getCurrentTime(){
+        var currentdate = new Date();
+        $("#nav-clock").text(currentdate.getHours() + ":" + (currentdate.getMinutes() < 10 ? "0" + currentdate.getMinutes() : currentdate.getMinutes()) + ":" + (currentdate.getSeconds() < 10 ? "0" + currentdate.getSeconds() : currentdate.getSeconds()) + "")
+    }
+    getCurrentTime()
+    setInterval(getCurrentTime, 1000)
 
-        openLoginForm();
+    /** Скрипт для переключения категорий */
+    var frame = $(".frame")
+    var categories = frame.find(".cats-list")
+    var catsLinks = categories.find(".cats-btn").children(".cats-link")
+    var contents = frame.find(".content")
+
+    catsLinks.click(function(){
+        catsLinks.removeClass("active")
+
+        var catsLink = $(this)
+        catsLink.addClass("active")
+        contents.each(function(){
+            var content = $(this)
+
+            content.removeClass("active")
+
+            console.log(catsLink.attr("id") + " " + content.data("cat"))
+
+            if (content.data("cat") == catsLink.attr("id")) {
+                content.addClass("active")
+            }
+        })
     })
-
-    $("#modal-authorization").find(".forgot-password").click(function(){
-        $("#modal-authorization").find(".authorization-form-forgot").toggleClass("visible")
-    })
-
-    function openRegisterForm() {
-        $("#modal-authorization")
-        .toggleClass("visible")
-        .find(".authorization-form-register")
-        .addClass("visible")
-
-        $("#authorization-toggler").children("#toggler-register").addClass("active")
-        
-    }
-
-    function openLoginForm() {
-        $("#modal-authorization")
-        .toggleClass("visible")
-        .find(".authorization-form-login")
-        .addClass("visible")
-
-        $("#authorization-toggler").children("#toggler-login").addClass("active")
-        
-    }
-
-    function clearAll() {
-        $("#modal-authorization").find(".authorization-form-forgot").removeClass("visible")
-        $("#modal-authorization").removeClass("visible")
-        .find("#authorization-toggler").children(".toggler-btn")
-        .removeClass("active")
-
-        $("#modal-authorization").find(".authorization-content")
-        .children(".authorization-form")
-        .removeClass("visible")
-    }
 })

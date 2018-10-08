@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css"/>
+        <title>{{ lang.frame.title }}</title>
+    </head>
+    <body>
+    <div class="wrapper">
+    <header>
+        <div class="container">
+            <nav class="navigation parent-bg">
+                <ul class="nav-list">
+                    <li class="nav-btn">
+                        {% for button in menu %}
+                            <a href="{{ button.link }}" class="nav-link w-bg {% if page == button.page %}active{% endif %}">{{ button.name }}</a>
+                        {% endfor %}
+                    </li>
+                </ul>
+                <ul class="right nav-list">
+                    <li class="nav-btn">
+                        <!--<a id="nav-login" class="nav-link mr-20 w-bg">Войти</a>-->
+                        <span id="nav-clock" class="nav-item">00:00:00</span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header> 
+    <div class="container">

@@ -1,0 +1,116 @@
+.modal-authorization {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1040;
+    display: none;
+
+    &.visible {
+        display: block;
+    }
+
+    .authorization-box {
+        background-color: #ffffff;
+        min-width: 600px;
+        max-width: 600px;
+        position: absolute;
+        top: 50px; left: 50%;
+        transform: translate(-50%);
+
+        .authorization-toggler {
+            display: flex;
+
+            .toggler-btn {
+                width: 50%;
+                height: 50px;
+                border: 0; padding: 0;
+                float: left;
+                background: #5bc0de;
+
+                &:hover, &.active {
+                    background: #50a9c4;                    
+                }
+
+                &:focus {
+                    outline: 0;
+                }
+            }
+        }
+    
+        .authorization-content {
+            padding: 10px;
+    
+            .authorization-form {
+                display: none;
+
+                input {
+                    margin-bottom: 0;
+                }
+                
+                h1 {
+                    padding-bottom: 0px;
+                }
+                
+                h5 {
+                    text-align: center;
+                }
+                /*админские кнопки удалить и изменить задание*/
+                .admin-task-button {
+                    position: absolute;
+                    top: 0;
+                    padding: 15px;
+                    font-size: 20pt;
+                    background-color: #999;
+                    color: black;
+                }
+
+                &.visible {
+                    display: block;
+                }
+            }
+
+            .authorization-form-forgot {
+                display: none;
+                margin: 5px 0 0;
+
+                &.visible {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    .background {
+        background: rgba(0, 0, 0, 0.7);
+        width: 100%;
+        height: 100%;
+
+        cursor: pointer;
+    }
+}
+
+header {
+    margin-bottom: 40px;
+
+    .navigation {
+
+        .nav-list {
+            display: inline-block;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            &.right {
+                float: right;
+            }
+
+            .nav-btn {
+
+                .nav-link, .nav-item {
+                    text-transform: uppercase;
+                }
+            }
+        }
+    }
+}

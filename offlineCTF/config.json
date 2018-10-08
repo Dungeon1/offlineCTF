@@ -11,7 +11,7 @@
     "db": "sqlite:///ctf.db",
 
     "language_file": "lang.json",
-    "language": "english",
+    "language": "russian",
 
     "debug": false,
 
@@ -19,5 +19,28 @@
     "email_password": "qwerty1234567890",
 
     "CAPCHA_SITE_KEY": "6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40",
-    "CAPCHA_SECRET_KEY": "6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f"
+    "CAPCHA_SECRET_KEY": "6Le_vXEUAAAAADq1F_8AfyKcDggBmuyaLG9OXt1f",
+
+    "menu": [
+        {
+            "name": "главная",
+            "link": "/",
+            "page": "main.html"
+        },
+        {
+            "name": "задания",
+            "link": "/tasks",
+            "page": "tasks.html"
+        },
+        {
+            "name": "информация",
+            "link": "/about",
+            "page": "about.html"
+        },
+        {
+            "name": "результаты",
+            "link": "/scoreboard",
+            "page": "scoreboard.html"
+        }
+    ]
 }

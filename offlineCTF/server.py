@@ -102,7 +102,7 @@ def error(msg):
     user = get_user()
 
     render = render_template('frame.html', lang=lang, page='error.html',
-        message=message, user=user)
+        message=message, user=user, menu=menu)
     return make_response(render)
 
 @app.route('/noerror/<msg>')
@@ -117,7 +117,7 @@ def noerror(msg):
     user = get_user()
 
     render = render_template('frame.html', lang=lang, page='noerror.html',
-        message=message, user=user)
+        message=message, user=user, menu=menu)
     return make_response(render)
 
 def session_login(username):
@@ -293,14 +293,14 @@ def tasks():
 
     
     render = render_template('frame.html', lang=lang, page='tasks.html',
-        user=user, categories=categories, grid=grid)
+        user=user, categories=categories, grid=grid, menu=menu)
     return make_response(render)
 
 @app.route('/addcat/', methods=['GET'])
 @admin_required
 def addcat():
     user = get_user()
-    render = render_template('frame.html', lang=lang, user=user, page='addcat.html')
+    render = render_template('frame.html', lang=lang, user=user, page='addcat.html', menu=menu)
     return make_response(render)
 
 @app.route('/addcat/', methods=['POST'])
@@ -322,7 +322,7 @@ def editcat(id):
     db = dataset.connect(config['db'])
     user = get_user()
     category = db['categories'].find_one(id=id)
-    render = render_template('frame.html', lang=lang, user=user, category=category, page='editcat.html')
+    render = render_template('frame.html', lang=lang, user=user, category=category, page='editcat.html', menu=menu)
     return make_response(render)
 
 @app.route('/editcat/<catId>/', methods=['POST'])
@@ -345,7 +345,7 @@ def deletecat(catId):
     category = db['categories'].find_one(id=catId)
 
     user = get_user()
-    render = render_template('frame.html', lang=lang, user=user, page='deletecat.html', category=category)
+    render = render_template('frame.html', lang=lang, user=user, page='deletecat.html', category=category, menu=menu)
     return make_response(render)
 
 @app.route('/editcat/<catId>/delete', methods=['POST'])
@@ -364,7 +364,7 @@ def addtask(cat):
     user = get_user()
 
     render = render_template('frame.html', lang=lang, user=user,
-            cat_name=category['name'], cat_id=category['id'], page='addtask.html')
+            cat_name=category['name'], cat_id=category['id'], page='addtask.html', menu=menu)
     return make_response(render)
 
 @app.route('/addtask/<cat>/', methods=['POST'])
@@ -414,7 +414,7 @@ def edittask(tid):
 
     render = render_template('frame.html', lang=lang, user=user,
             cat_name=category['name'], cat_id=category['id'],
-            page='edittask.html', task=task)
+            page='edittask.html', task=task, menu=menu)
     return make_response(render)
 
 @app.route('/tasks/<tid>/edit', methods=['POST'])
@@ -471,7 +471,7 @@ def deletetask(tid):
     task = tasks.find_one(id=tid)
 
     user = get_user()
-    render = render_template('frame.html', lang=lang, user=user, page='deletetask.html', task=task)
+    render = render_template('frame.html', lang=lang, user=user, page='deletetask.html', task=task, menu=menu)
     return make_response(render)
 
 @app.route('/tasks/<tid>/delete', methods=['POST'])
@@ -501,7 +501,7 @@ def task(tid):
     
     render = render_template('frame.html', lang=lang, page='task.html',
         task_done=task_done, login=login, solutions=solutions,
-        user=user, category=task["cat_name"], task=task, score=task["score"])
+        user=user, category=task["cat_name"], task=task, score=task["score"], menu=menu)
     return make_response(render)
 
 @app.route('/submit/<tid>/<flag>')
@@ -558,7 +558,7 @@ def scoreboard():
     scores = list(scores)
 
     render = render_template('frame.html', lang=lang, page='scoreboard.html',
-        user=user, scores=scores)
+        user=user, scores=scores, menu=menu)
     return make_response(render)
 
 @app.route('/scoreboard_school')
@@ -575,7 +575,7 @@ def scoreboard_school():
     scores = list(scores)
     
     render = render_template('frame.html', lang=lang, page='scoreboard_school.html',
-        user=user, scores=scores)
+        user=user, scores=scores, menu=menu)
     return make_response(render)
 
 
@@ -599,7 +599,7 @@ def about():
     user = get_user()
     
     render = render_template('frame.html', lang=lang, page='about.html',
-        user=user)
+        user=user, menu=menu)
     return make_response(render)
 
 
@@ -610,7 +610,7 @@ def category():
     #isAdmin = user['isAdmin']
     
     render = render_template('frame.html', lang=lang, page='category.html',
-        user=user)
+        user=user, menu=menu)
     return make_response(render)
 
 
@@ -626,12 +626,14 @@ def index():
     user = get_user()
 
     render = render_template('frame.html', lang=lang,
-        page='main.html', user=user)
+        page='main.html', user=user, menu=menu)
     return make_response(render)
 
 # Загружаем конфигурацию с config.json и устанавливаем переменные
 config_str = open('config.json', 'r',encoding="utf-8").read()
 config = json.loads(config_str)
+
+menu = config['menu']
 
 app.secret_key = config['secret_key']
 
@@ -640,7 +642,8 @@ if config['startTime']:
 else:
     config['startTime'] = datetime.datetime.min
 
-lang_str = open(config['language_file'], 'r',encoding="utf-8").read()
+# Загружаем переменные с lang.json
+lang_str = open(config['language_file'], 'r', encoding="utf-8").read()
 lang = json.loads(lang_str)
 
 lang = lang[config['language']]
