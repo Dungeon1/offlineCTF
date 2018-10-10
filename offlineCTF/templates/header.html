@@ -12,11 +12,11 @@
         <div class="container">
             <nav class="navigation parent-bg">
                 <ul class="nav-list">
+                    {% for menu_page in menu %}
                     <li class="nav-btn">
-                        {% for button in menu %}
-                            <a href="{{ button.link }}" class="nav-link w-bg {% if page == button.page %}active{% endif %}">{{ button.name }}</a>
-                        {% endfor %}
+                        <a href="{{ menu_page.url }}" class="nav-link w-bg{% if url == menu_page.url %} active{% endif %}">{{ menu_page.name }}</a>
                     </li>
+                    {% endfor %}
                 </ul>
                 <ul class="right nav-list">
                     <li class="nav-btn">

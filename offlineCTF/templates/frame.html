@@ -1,4 +1,33 @@
 {% include "header.html" %}
-{% include page %}
+<div class="frame">
+    <div class="row">
+    {% if page %}  
+        {% include page %}
+    {% else %}
+    <div class="column col-3 cats-col">
+        <div class="categories">
+            <ul class="cats-list">
+                {% if cats %}
+                    {% for cat in cats %}
+                    <li class="cats-btn">
+                        <a id="category-{{ cat.id }}" class="cats-link{% if cat.active == 1 %} active{% endif %}">{{ cat.name }}</a>
+                    </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="column col-9 content-col">
+        {% for cat in cats %}
+        <div class="content active" data-cat="category-{{ cat.id }}">
+            {% if cat.template %}
+            {% include 'categories/'+ cat.template %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    </div>
+</div>
 {% include "footer.html" %}
 

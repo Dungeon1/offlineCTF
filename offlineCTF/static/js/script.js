@@ -31,8 +31,6 @@ $(document).ready(function(){
 
             content.removeClass("active")
 
-            console.log(catsLink.attr("id") + " " + content.data("cat"))
-
             if (content.data("cat") == catsLink.attr("id")) {
                 content.addClass("active")
             }
