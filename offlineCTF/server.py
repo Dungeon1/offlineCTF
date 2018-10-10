@@ -90,6 +90,24 @@ def get_total_completion_count():
 
     return res
 
+def get_main_menu():
+    db = dataset.connect(config['db'])
+    menu = list(db.query("SELECT * FROM pages WHERE menu = 1"))
+
+    if menu:
+        return menu
+
+    return None
+
+def get_cats(url):
+    db = dataset.connect(config['db'])
+    cats = list(db.query("SELECT cats.* FROM categories cats, pages p WHERE cats.page_id = p.id AND p.url == '" + url + "'"))
+    
+    if cats:
+        return cats
+
+    return list()
+
 @app.route('/error/<msg>')
 def error(msg):
     """Displays an error message"""
@@ -100,6 +118,7 @@ def error(msg):
         message = lang['error']['unknown']
 
     user = get_user()
+    menu = get_main_menu()
 
     render = render_template('frame.html', lang=lang, page='error.html',
         message=message, user=user, menu=menu)
@@ -115,6 +134,7 @@ def noerror(msg):
         message = lang['error']['unknown']
 
     user = get_user()
+    menu = get_main_menu()
 
     render = render_template('frame.html', lang=lang, page='noerror.html',
         message=message, user=user, menu=menu)
@@ -191,7 +211,6 @@ def forgot_submit():
 
     return redirect('/')
 
-
 @app.route('/register/submit', methods = ['POST','GET'])
 def register_submit():
     db = dataset.connect(config['db'])
@@ -247,15 +266,19 @@ def register_submit():
 @app.route('/tasks')
 @login_required
 def tasks():
+    # Главная страница
     db = dataset.connect(config['db'])
 
+    url = '/tasks'
+
     user = get_user()
+    menu = get_main_menu()
+    cats = get_cats(url)
 
     userCount = db['users'].count(isHidden=0)
     isAdmin = user['isAdmin']
 
     categories = db['categories']
-    #catCount = categories.count()
 
     flags = get_flags()
 
@@ -291,15 +314,15 @@ def tasks():
 
         grid.append(gTasks)
 
-    
-    render = render_template('frame.html', lang=lang, page='tasks.html',
-        user=user, categories=categories, grid=grid, menu=menu)
+    render = render_template('frame.html', lang=lang, cats=cats, url=url,
+        user=user, menu=menu, grid=grid)
     return make_response(render)
 
 @app.route('/addcat/', methods=['GET'])
 @admin_required
 def addcat():
     user = get_user()
+    menu = get_main_menu()
     render = render_template('frame.html', lang=lang, user=user, page='addcat.html', menu=menu)
     return make_response(render)
 
@@ -321,6 +344,7 @@ def addcatsubmit():
 def editcat(id):
     db = dataset.connect(config['db'])
     user = get_user()
+    menu = get_main_menu()
     category = db['categories'].find_one(id=id)
     render = render_template('frame.html', lang=lang, user=user, category=category, page='editcat.html', menu=menu)
     return make_response(render)
@@ -345,6 +369,7 @@ def deletecat(catId):
     category = db['categories'].find_one(id=catId)
 
     user = get_user()
+    menu = get_main_menu()
     render = render_template('frame.html', lang=lang, user=user, page='deletecat.html', category=category, menu=menu)
     return make_response(render)
 
@@ -362,6 +387,7 @@ def addtask(cat):
     category = db['categories'].find_one(id=cat)
 
     user = get_user()
+    menu = get_main_menu()
 
     render = render_template('frame.html', lang=lang, user=user,
             cat_name=category['name'], cat_id=category['id'], page='addtask.html', menu=menu)
@@ -408,6 +434,7 @@ def addtasksubmit(cat):
 def edittask(tid):
     db = dataset.connect(config['db'])
     user = get_user()
+    menu = get_main_menu()
 
     task = db["tasks"].find_one(id=tid)
     category = db["categories"].find_one(id=task['category'])
@@ -471,6 +498,7 @@ def deletetask(tid):
     task = tasks.find_one(id=tid)
 
     user = get_user()
+    menu = get_main_menu()
     render = render_template('frame.html', lang=lang, user=user, page='deletetask.html', task=task, menu=menu)
     return make_response(render)
 
@@ -487,6 +515,7 @@ def task(tid):
     db = dataset.connect(config['db'])
 
     user = get_user()
+    menu = get_main_menu()
 
     task = get_task(tid)
     if not task:
@@ -547,9 +576,14 @@ def submit(tid, flag):
 @app.route('/scoreboard')
 @login_required
 def scoreboard():
-    """Displays the scoreboard"""
+    # Таблица рекордов
     db = dataset.connect(config['db'])
+   
+    url = '/scoreboard'
+
     user = get_user()
+    menu = get_main_menu()
+    cats = get_cats(url)
     scores = db.query('''select u.username, u.region, ifnull(sum(f.score), 0) as score,
         max(timestamp) as last_submit from users u left join flags f
         on u.id = f.user_id where u.isHidden = 0 and u.school=2 group by u.username
@@ -557,8 +591,8 @@ def scoreboard():
 
     scores = list(scores)
 
-    render = render_template('frame.html', lang=lang, page='scoreboard.html',
-        user=user, scores=scores, menu=menu)
+    render = render_template('frame.html', lang=lang, cats=cats, url=url,
+        user=user, menu=menu, scores=scores)
     return make_response(render)
 
 @app.route('/scoreboard_school')
@@ -567,6 +601,7 @@ def scoreboard_school():
     """Displays the scoreboard"""
     db = dataset.connect(config['db'])
     user = get_user()
+    menu = get_main_menu()
     scores = db.query('''select u.username, u.region, ifnull(sum(f.score), 0) as score,
         max(timestamp) as last_submit from users u left join flags f
         on u.id = f.user_id where u.isHidden = 0 and u.school=1 group by u.username
@@ -577,7 +612,6 @@ def scoreboard_school():
     render = render_template('frame.html', lang=lang, page='scoreboard_school.html',
         user=user, scores=scores, menu=menu)
     return make_response(render)
-
 
 @app.route('/scoreboard.json')
 def scoreboard_json():
@@ -590,29 +624,7 @@ def scoreboard_json():
 
     scores = list(scores)
 
-    return Response(json.dumps(scores), mimetype='application/json')
-
-@app.route('/about')
-@login_required
-def about():
-    # Страница "О нас"
-    user = get_user()
-    
-    render = render_template('frame.html', lang=lang, page='about.html',
-        user=user, menu=menu)
-    return make_response(render)
-
-
-@app.route('/category')
-@login_required
-def category():
-    user = get_user()
-    #isAdmin = user['isAdmin']
-    
-    render = render_template('frame.html', lang=lang, page='category.html',
-        user=user, menu=menu)
-    return make_response(render)
-
+    return Response(json.dumps(scores), mimetype='application/json') 
 
 @app.route('/logout')
 @login_required
@@ -623,17 +635,19 @@ def logout():
 @app.route('/')
 def index():
     # Главная страница
-    user = get_user()
+    url = '/'
 
-    render = render_template('frame.html', lang=lang,
-        page='main.html', user=user, menu=menu)
+    user = get_user()
+    menu = get_main_menu()
+    cats = get_cats(url)
+
+    render = render_template('frame.html', lang=lang, cats=cats, url=url,
+        user=user, menu=menu)
     return make_response(render)
 
 # Загружаем конфигурацию с config.json и устанавливаем переменные
 config_str = open('config.json', 'r',encoding="utf-8").read()
 config = json.loads(config_str)
-
-menu = config['menu']
 
 app.secret_key = config['secret_key']
 

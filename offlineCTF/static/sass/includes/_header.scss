@@ -106,7 +106,8 @@ header {
             }
 
             .nav-btn {
-
+                display: inline-block;
+                
                 .nav-link, .nav-item {
                     text-transform: uppercase;
                 }
