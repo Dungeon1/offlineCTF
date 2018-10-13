@@ -26,5 +26,13 @@
                 </ul>
             </nav>
         </div>
-    </header> 
-    <div class="container">
+    </header>
+    
+    <div class="container main-frame">
+        {% if user.isAdmin %}
+            <div class="ui-message" id="admin-message">
+                <p class="message-title">Title</p>
+                <p class="message-text">Text</p>
+                <form action="" id="message-form" class="message-form" method="POST"></form>
+            </div>
+        {% endif %}

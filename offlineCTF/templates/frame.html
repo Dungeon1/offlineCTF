@@ -13,18 +13,58 @@
                             <a id="category-{{ cat.id }}" class="cats-link{% if cat == cats[0] %} active{% endif %}">{{ cat.name }}</a>
                         </li>
                         {% endfor %}
+                        {% if user.isAdmin and url == "/tasks" %}
+                            <li class="cats-btn"><a class="cats-link blocked">--------</a></li>
+                            <li class="cats-btn">
+                                <a id="category-add" class="cats-link blocked">добавить.exe</a>
+                            </li>
+                            <li class="cats-btn">
+                                <a id="category-edit" class="cats-link blocked">изменить.exe</a>
+                            </li>
+                            <li class="cats-btn">
+                                <a id="category-delete" class="cats-link blocked">удалить.exe</a>
+                            </li>
+                            <li class="cats-btn">
+                                <a id="category-add-task" class="cats-link blocked">добавить_таск.exe</a>
+                            </li>
+                        {% endif %}
+                        <li class="cats-btn"><a class="cats-link blocked">--------</a></li>
+                    {% endif %}
+                    {% if not user %}
+                        <li class="cats-btn">
+                            <a id="category-login" class="cats-link">войти.exe</a>
+                        </li>
+                        <li class="cats-btn">
+                            <a id="category-register" class="cats-link">регистрация.exe</a>
+                        </li>
+                    {% else %}
+                        <li class="cats-btn">
+                            <a id="category-logout" class="cats-link blocked" href="/logout">выйти.exe</a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
         <div class="column col-9 content-col">
-            {% for cat in cats %}
-            <div class="content{% if cat == cats[0] %} active{% endif %}" data-cat="category-{{ cat.id }}">
-                {% if cat.template %}
-                {% include 'categories/'+ cat.template %}
-                {% endif %}
-            </div>
+            {% for cat in cats if cat.template if not cat.page_id == 2 %}
+                <div class="content{% if cat == cats[0] %} active{% endif %}" data-cat="category-{{ cat.id }}">
+                    {% include "categories/"+ cat.template %}
+                </div>
             {% endfor %}
+                {% for cat in grid %}
+                    <div class="content content-tasks{% if cat[0] == cats[0] %} active{% endif %}" data-cat="category-{{ cat[0].id }}">
+                        {% include "categories/tasks.html" %}
+                        </div> 
+                    </div>
+                {% endfor %}
+            {% if not user %}
+                <div class="content" data-cat="category-login">
+                    {% include "categories/login.html" %}
+                </div>
+                <div class="content" data-cat="category-register">
+                    {% include "categories/register.html" %}
+                </div>
+            {% endif %}
         </div>
     </div>
     {% endif %}

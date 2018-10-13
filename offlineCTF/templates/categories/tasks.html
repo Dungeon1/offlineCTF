@@ -1,0 +1,24 @@
+{% for task in cat %}
+    {% if not task.score %}
+        <div class="category-name">
+            {{ task.name }}
+        </div>
+        <div class="tasks-table">
+            <a class="task-link tasks-info row">
+                <span class="column col-3">[название]</span>
+                <span class="column col-3">[описание]</span>
+                <span class="column col-2">[очки]</span>
+                <span class="column col-4">[решено]</span>
+            </a>
+    {% else %}
+        <a class="task-link row">
+            <span class="task-name column col-3">{{ task.name }}</span>
+            <span class="task-description column col-3">{{ task.desc[0:25] }}...</span>
+            <span class="task-score column col-2">{{ task.score }}</span>
+            <span class="task-complete column col-4">
+                <span class="complete-left">[</span><span class="complete-value">{{ task.percentComplete }}</span><span class="complete-right">]</span>
+                <div class="complete-background" style="width: calc({{ task.percentComplete }}px - 24px)"></div>
+            </span>
+        </a>
+    {% endif %}
+{% endfor %}

@@ -92,7 +92,7 @@ def get_total_completion_count():
 
 def get_main_menu():
     db = dataset.connect(config['db'])
-    menu = list(db.query("SELECT * FROM pages WHERE menu = 1"))
+    menu = list(db.query("SELECT * FROM pages"))
 
     if menu:
         return menu
@@ -101,6 +101,13 @@ def get_main_menu():
 
 def get_cats(url):
     db = dataset.connect(config['db'])
+
+    user = get_user()
+    isUser = "0"
+    if user: isUser = "1"
+    isAdmin = "0"
+    if (user and user['isAdmin']): isAdmin = "1"
+
     cats = list(db.query("SELECT cats.* FROM categories cats, pages p WHERE cats.page_id = p.id AND p.url == '" + url + "'"))
     
     if cats:
@@ -278,7 +285,7 @@ def tasks():
     userCount = db['users'].count(isHidden=0)
     isAdmin = user['isAdmin']
 
-    categories = db['categories']
+    categories = db.query("SELECT * FROM categories WHERE page_id == 2")
 
     flags = get_flags()
 
@@ -309,21 +316,13 @@ def tasks():
             task['isComplete'] = tid in flags
             gTasks.append(task)
 
-        if isAdmin:
-            gTasks.append({'add': True, 'category': cat['id']})
+        #if isAdmin:
+            #gTasks.append({'add': True, 'category': cat['id']})
 
         grid.append(gTasks)
 
     render = render_template('frame.html', lang=lang, cats=cats, url=url,
         user=user, menu=menu, grid=grid)
-    return make_response(render)
-
-@app.route('/addcat/', methods=['GET'])
-@admin_required
-def addcat():
-    user = get_user()
-    menu = get_main_menu()
-    render = render_template('frame.html', lang=lang, user=user, page='addcat.html', menu=menu)
     return make_response(render)
 
 @app.route('/addcat/', methods=['POST'])
@@ -336,18 +335,9 @@ def addcatsubmit():
     else:
         db = dataset.connect(config['db'])
         categories = db['categories']
-        categories.insert(dict(name=name))
+        id = len(list(categories)) + 1
+        categories.insert(dict(id=id, page_id=2, name=name))
         return redirect('/tasks')
-
-@app.route('/editcat/<id>/', methods=['GET'])
-@admin_required
-def editcat(id):
-    db = dataset.connect(config['db'])
-    user = get_user()
-    menu = get_main_menu()
-    category = db['categories'].find_one(id=id)
-    render = render_template('frame.html', lang=lang, user=user, category=category, page='editcat.html', menu=menu)
-    return make_response(render)
 
 @app.route('/editcat/<catId>/', methods=['POST'])
 @admin_required
@@ -362,36 +352,12 @@ def editcatsubmit(catId):
         categories.update(dict(name=name, id=catId), ['id'])
         return redirect('/tasks')
 
-@app.route('/editcat/<catId>/delete', methods=['GET'])
-@admin_required
-def deletecat(catId):
-    db = dataset.connect(config['db'])
-    category = db['categories'].find_one(id=catId)
-
-    user = get_user()
-    menu = get_main_menu()
-    render = render_template('frame.html', lang=lang, user=user, page='deletecat.html', category=category, menu=menu)
-    return make_response(render)
-
-@app.route('/editcat/<catId>/delete', methods=['POST'])
+@app.route('/editcat/<catId>/delete')
 @admin_required
 def deletecatsubmit(catId):
     db = dataset.connect(config['db'])
     db['categories'].delete(id=catId)
     return redirect('/tasks')
-
-@app.route('/addtask/<cat>/', methods=['GET'])
-@admin_required
-def addtask(cat):
-    db = dataset.connect(config['db'])
-    category = db['categories'].find_one(id=cat)
-
-    user = get_user()
-    menu = get_main_menu()
-
-    render = render_template('frame.html', lang=lang, user=user,
-            cat_name=category['name'], cat_id=category['id'], page='addtask.html', menu=menu)
-    return make_response(render)
 
 @app.route('/addtask/<cat>/', methods=['POST'])
 @admin_required
@@ -399,7 +365,6 @@ def addtasksubmit(cat):
     try:
         name = bleach.clean(request.form['name'], tags=[])
         desc = bleach.clean(request.form['desc'], tags=descAllowedTags)
-        category = int(request.form['category'])
         score = int(request.form['score'])
         flag = request.form['flag']
     except KeyError:
@@ -411,7 +376,7 @@ def addtasksubmit(cat):
         task = dict(
                 name=name,
                 desc=desc,
-                category=category,
+                category=cat,
                 score=score,
                 flag=flag)
         file = request.files['file']
@@ -428,21 +393,6 @@ def addtasksubmit(cat):
 
         tasks.insert(task)
         return redirect('/tasks')
-
-@app.route('/tasks/<tid>/edit', methods=['GET'])
-@admin_required
-def edittask(tid):
-    db = dataset.connect(config['db'])
-    user = get_user()
-    menu = get_main_menu()
-
-    task = db["tasks"].find_one(id=tid)
-    category = db["categories"].find_one(id=task['category'])
-
-    render = render_template('frame.html', lang=lang, user=user,
-            cat_name=category['name'], cat_id=category['id'],
-            page='edittask.html', task=task, menu=menu)
-    return make_response(render)
 
 @app.route('/tasks/<tid>/edit', methods=['POST'])
 @admin_required
@@ -489,18 +439,6 @@ def edittasksubmit(tid):
 
         tasks.update(task, ['id'])
         return redirect('/tasks')
-
-@app.route('/tasks/<tid>/delete', methods=['GET'])
-@admin_required
-def deletetask(tid):
-    db = dataset.connect(config['db'])
-    tasks = db['tasks']
-    task = tasks.find_one(id=tid)
-
-    user = get_user()
-    menu = get_main_menu()
-    render = render_template('frame.html', lang=lang, user=user, page='deletetask.html', task=task, menu=menu)
-    return make_response(render)
 
 @app.route('/tasks/<tid>/delete', methods=['POST'])
 @admin_required
@@ -584,33 +522,15 @@ def scoreboard():
     user = get_user()
     menu = get_main_menu()
     cats = get_cats(url)
-    scores = db.query('''select u.username, u.region, ifnull(sum(f.score), 0) as score,
+    scores = db.query('''select u.username, u.region, u.school, ifnull(sum(f.score), 0) as score,
         max(timestamp) as last_submit from users u left join flags f
-        on u.id = f.user_id where u.isHidden = 0 and u.school=2 group by u.username
+        on u.id = f.user_id where u.isHidden = 0 group by u.username
         order by score desc, last_submit asc;''')
 
     scores = list(scores)
 
     render = render_template('frame.html', lang=lang, cats=cats, url=url,
         user=user, menu=menu, scores=scores)
-    return make_response(render)
-
-@app.route('/scoreboard_school')
-@login_required
-def scoreboard_school():
-    """Displays the scoreboard"""
-    db = dataset.connect(config['db'])
-    user = get_user()
-    menu = get_main_menu()
-    scores = db.query('''select u.username, u.region, ifnull(sum(f.score), 0) as score,
-        max(timestamp) as last_submit from users u left join flags f
-        on u.id = f.user_id where u.isHidden = 0 and u.school=1 group by u.username
-        order by score desc, last_submit asc;''')
-
-    scores = list(scores)
-    
-    render = render_template('frame.html', lang=lang, page='scoreboard_school.html',
-        user=user, scores=scores, menu=menu)
     return make_response(render)
 
 @app.route('/scoreboard.json')
