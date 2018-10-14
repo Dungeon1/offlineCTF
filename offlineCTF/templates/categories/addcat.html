@@ -1,0 +1,7 @@
+<h1>{{ lang.addcat.add_title }} </h1>
+<form method="POST" action="/addcat{% if url != '/' %}{{ url }}{% else %}{{ "/index" }}{% endif %}">
+	<label>{{ lang.addcat.name_label }}</label>
+	<input name="name" type="text" class="form-control" />
+	<textarea name="content" class="form-textarea"></textarea>
+	<input type="submit" class="form-control" />
+</form>

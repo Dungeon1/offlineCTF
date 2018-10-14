@@ -1,0 +1,20 @@
+<div class="category-name">
+	{{ cat.name }}
+</div>
+<div class="tasks-table">
+	<a class="task-link tasks-info row">
+		<span class="column col-1">[#]</span>
+		<span class="column col-5">[участник]</span>
+		<span class="column col-4">[регион]</span>
+		<span class="column col-2">[очки]</span>
+	</a>
+{% for user in scores if (cat.id == 8 and user.school == 2) or (cat.id == 9 and user.school == 1) %}
+	<a class="task-link row">
+		<span class="task-name column col-1">{{ loop.index }}</span>
+		<span class="task-description column col-5">{{ user.username }}</span>
+		<span class="task-score column col-4">{{ user.region }}</span>
+		<span class="task-score column col-2">{{ user.score }}</span>
+	</a>
+{% endfor %}
+</div>
+

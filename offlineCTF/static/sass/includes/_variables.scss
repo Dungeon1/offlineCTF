@@ -4,17 +4,19 @@ $btn-hovered-bg: rgba(128, 128, 128, 0.5);
 
 $color-content: rgba(255, 255, 255, 0.7);
 
+$main-font: Fixedsys;
+
 /** Шрифты **/
 @font-face {
-    font-family: Fixedsys;
-    src: url(../fonts/FSEX300.ttf);
+	font-family: Fixedsys;
+	src: url(../fonts/FSEX300.ttf);
 }
 
 /** Mixins **/
 @mixin clearfix {
-    &:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
-  }
+	&:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+}

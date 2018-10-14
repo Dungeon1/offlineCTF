@@ -1,0 +1,37 @@
+<form class="authorization-form authorization-form-register" role="form" action="/register/submit" method="post" enctype="multipart/form-data">
+    <h1>Регистрация команды</h1>
+    <br/>
+    <label><p align="justify">Регистрация проводится один раз одним из членов команды. Во время проведения соревнования всем членам команды необходимо авторизоваться через название команды, введенное при регистрации.</p></label>
+    <div class="contener_logo_pas">
+        <div class="login_cont">
+            <label>Название команды:</label>
+            <input type="text" class="form-control" name="user" required="required">
+        </div>
+        <div class="pas">
+            <label>Пароль:</label>
+            <input type="password" class="form-control" name="password" required="required">
+        </div>
+    </div>
+    <div class="contener_logo_pas">
+        <div class="contener_email_reg">
+            <div>
+                <label>Email:</label>
+                <input type="text" class="form-control" name="email" required="required">
+            </div>
+        </div>
+        <div>
+            <label>Регион:</label>
+            <input type="region" class="form-control" name="region" required="required">
+        </div>
+    </div>
+    <label>Преимущественный состав команды:</label><br>
+    <input type="radio" id="Choice1"
+        name="school" value="1">
+    <label for="contactChoice1">Школьники</label>
+
+    <input type="radio" id="Choice2"
+        name="school" value="2">
+    <label for="contactChoice2">Студенты</label><br><br>
+    <div class="g-recaptcha" data-sitekey="6Le_vXEUAAAAAC4dkYFqG3IWTG0JiOIkYFFWza40"></div>		
+    <input type="submit" name="submit" id="submit" value="Готово!" class="btn_reg btn btn-info btn-block">
+</form>
