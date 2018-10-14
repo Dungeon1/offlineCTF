@@ -23,6 +23,22 @@
 
             margin: 0;
             padding: 0;
+
+            .category-simple, .category-cats {
+                display: block;
+
+                &.hidden {
+                    display: none;
+                }
+            }
+        }
+
+        .category-task {
+            display: none;
+
+            &.visible {
+                display: block;
+            }
         }
     }
 }
