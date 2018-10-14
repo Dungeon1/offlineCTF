@@ -293,6 +293,8 @@ def tasks():
     tasks = list(tasks)
     taskCompletedCount = get_total_completion_count()
 
+    tasksdone = db.query("SELECT * FROM flags WHERE user_id = " + str(user['id']))
+
     grid = []
 
     for cat in categories:
@@ -312,7 +314,12 @@ def tasks():
                 percentComplete = 99.99
 
             task['percentComplete'] = percentComplete
-
+            task['isDone'] = False
+            for taskdone in tasksdone:
+                if (taskdone['task_id'] == task['id']):
+                    task['isDone'] = True
+                    break
+                    
             task['isComplete'] = tid in flags
             gTasks.append(task)
 
@@ -322,7 +329,7 @@ def tasks():
         grid.append(gTasks)
 
     render = render_template('frame.html', lang=lang, cats=cats, url=url,
-        user=user, menu=menu, grid=grid)
+        user=user, menu=menu, grid=grid, tasksdone=tasksdone)
     return make_response(render)
 
 @app.route('/addcat/', methods=['POST'])
@@ -394,13 +401,12 @@ def addtasksubmit(cat):
         tasks.insert(task)
         return redirect('/tasks')
 
-@app.route('/tasks/<tid>/edit', methods=['POST'])
+@app.route('/tasks/<tid>/edit/', methods=['POST'])
 @admin_required
 def edittasksubmit(tid):
     try:
         name = bleach.clean(request.form['name'], tags=[])
         desc = bleach.clean(request.form['desc'], tags=descAllowedTags)
-        category = int(request.form['category'])
         score = int(request.form['score'])
         flag = request.form['flag']
     except KeyError:
@@ -413,7 +419,6 @@ def edittasksubmit(tid):
         task['id']=tid
         task['name']=name
         task['desc']=desc
-        task['category']=category
         task['score']=score
 
         
@@ -440,36 +445,12 @@ def edittasksubmit(tid):
         tasks.update(task, ['id'])
         return redirect('/tasks')
 
-@app.route('/tasks/<tid>/delete', methods=['POST'])
+@app.route('/tasks/<tid>/delete/')
 @admin_required
 def deletetasksubmit(tid):
     db = dataset.connect(config['db'])
     db['tasks'].delete(id=tid)
     return redirect('/tasks')
-
-@app.route('/tasks/<tid>/')
-@login_required
-def task(tid):
-    db = dataset.connect(config['db'])
-
-    user = get_user()
-    menu = get_main_menu()
-
-    task = get_task(tid)
-    if not task:
-        return redirect('/error/task_not_found')
-
-    flags = get_flags()
-    task_done = task['id'] in flags
-
-    solutions = db['flags'].find(task_id=task['id'])
-    solutions = len(list(solutions))
-
-    
-    render = render_template('frame.html', lang=lang, page='task.html',
-        task_done=task_done, login=login, solutions=solutions,
-        user=user, category=task["cat_name"], task=task, score=task["score"], menu=menu)
-    return make_response(render)
 
 @app.route('/submit/<tid>/<flag>')
 @login_required
