@@ -293,7 +293,7 @@ def tasks():
     tasks = list(tasks)
     taskCompletedCount = get_total_completion_count()
 
-    tasksdone = db.query("SELECT * FROM flags WHERE user_id = " + str(user['id']))
+    tasksdone = list(db.query("SELECT * FROM flags WHERE user_id = " + str(user['id'])))
 
     grid = []
 
@@ -318,7 +318,7 @@ def tasks():
             for taskdone in tasksdone:
                 if (taskdone['task_id'] == task['id']):
                     task['isDone'] = True
-                    break
+                    
                     
             task['isComplete'] = tid in flags
             gTasks.append(task)
@@ -329,7 +329,7 @@ def tasks():
         grid.append(gTasks)
 
     render = render_template('frame.html', lang=lang, cats=cats, url=url,
-        user=user, menu=menu, grid=grid, tasksdone=tasksdone)
+        user=user, menu=menu, grid=grid)
     return make_response(render)
 
 @app.route('/addcat/', methods=['POST'])

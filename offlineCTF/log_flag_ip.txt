@@ -116,3 +116,7 @@
  Submit flag from: shitcoder c2RmZHM= cxvxcvxcv sdfds ip: 127.0.0.1
  Submit flag from: shitcoder eGN2eGN2ZHN2ZmR2ZmQ= cxvxcvxcv xcvxcvdsvfdvfd ip: 127.0.0.1
  Submit flag from: shitcoder Y3h2eGN2eGN2 cxvxcvxcv cxvxcvxcv ip: 127.0.0.1
+ Submit flag from: asd Y3h2eGN2eGN2 waf cxvxcvxcv ip: 127.0.0.1
+ Submit flag from: asd Y3h2eGN2eGN2 cxvxcvxcv cxvxcvxcv ip: 127.0.0.1
+ Submit flag from: asd d2Fm waf waf ip: 127.0.0.1
+ Submit flag from: asd YXNmeGN4dg== waf asfxcxv ip: 127.0.0.1
