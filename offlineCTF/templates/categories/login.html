@@ -1,10 +1,7 @@
 <script src='https://www.google.com/recaptcha/api.js'></script>
 
 <div class="authorization-box">
-	<div class="authorization-toggler" id="authorization-toggler">
-		<button id="toggler-login" class="toggler-btn">Авторизация</button>
-		<button id="toggler-register" class="toggler-btn">Регистрация</button>
-	</div>
+	
 	<div class="authorization-content">
 		<form class="authorization-form authorization-form-login" action="/login" role="form" method="post">
 			<h1>Войти в аккаунт</h1>
@@ -13,6 +10,7 @@
 				<label>Название команды:</label>
 				<input type="text" placeholder="User" class="form-control" name="user">
 			</div>
+		<br/>
 			<div class="form-group">
 				<label>Пароль:</label>	
 				<input type="password" placeholder="Password" class="form-control" name="password">
