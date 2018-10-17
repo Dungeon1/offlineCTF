@@ -1,0 +1,35 @@
+.table {
+    text-align: left;
+    
+    .row-link {
+        display: block;
+    }
+}
+
+.table.tasks-table {
+    .task-description {
+        overflow: hidden;
+    }
+
+    .task-scale {
+        position: relative;
+        text-align: center;
+
+        .scale-left {
+            float: left;
+        }
+
+        .scale-right {
+            float: right;
+        }
+
+        .scale-value {
+            position: absolute;
+            left: 12px; bottom: 3px;
+            z-index: -1;
+
+            width: calc(100% - 24px); height: 15px;
+            background: gray;
+        }
+    }
+}

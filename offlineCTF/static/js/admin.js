@@ -1,15 +1,16 @@
 $(document).ready(function(){
     var frame = $(".frame")
     var categories = frame.find(".cats-list")
-    var catsLinks = categories.find(".cats-btn").children(".cats-link")
-    var catsSimple = categories.find(".cats-btn.category-simple")
-    var catsCats = categories.find(".cats-btn.category-cats")
-    var contents = frame.find(".content")
+    
+    var simpleCategories = categories.children(".category-simple")
+    var adminCategories = categories.children(".category-admin")
+
+    var taskContent = frame.find(".content-task")
+    var taskBlock = taskContent.children(".task-block")
 
     var message = $("#admin-message")
 
-    categories.find(".cats-link#category-add").click(function(){
-        var activeLink = categories.find(".cats-btn").children(".cats-link.active")
+    adminCategories.children(".cats-link#category-add").click(function(){
         setupMessage("добавление", "добавить категорию", [
             {
                 type: "label",
@@ -35,27 +36,8 @@ $(document).ready(function(){
         openMessage()
     })
 
-    categories.find(".cats-link#category-delete").click(function(e){
-        var activeLink = categories.find(".cats-btn").children(".cats-link.active")
-        setupMessage("удаление", "вы точно уверены?", [
-            {
-                type: "linkbtn",
-                id: "yes-btn",
-                label: "да",
-                link: "/editcat/" + activeLink.attr('id').substring(9) + "/delete"
-            },
-            {
-                type: "btn",
-                id: "no-btn",
-                label: "нет",
-                onClick: closeMessage
-            }
-        ])
-        openMessage()
-    })
-
-    categories.find(".cats-link#category-edit").click(function(){
-        var activeLink = categories.find(".cats-btn").children(".cats-link.active")
+    adminCategories.children(".cats-link#category-edit").click(function(){
+        var activeLink = simpleCategories.children(".cats-link.active")
         setupMessage("изменение", "изменить категорию", [
             {
                 type: "label",
@@ -82,8 +64,26 @@ $(document).ready(function(){
         openMessage()
     })
 
-    categories.find(".cats-link#category-add-task").click(function(){
-        var activeLink = categories.find(".cats-btn").children(".cats-link.active")
+    adminCategories.children(".cats-link#category-delete").click(function(e){
+        var activeLink = simpleCategories.children(".cats-link.active")
+        setupMessage("удаление", "вы точно уверены?", [
+            {
+                type: "linkbtn",
+                id: "yes-btn",
+                label: "да",
+                link: "/editcat/" + activeLink.attr('id').substring(9) + "/delete"
+            },
+            {
+                type: "btn",
+                id: "no-btn",
+                label: "нет",
+                onClick: closeMessage
+            }
+        ])
+        openMessage()
+    })
+
+    adminCategories.children(".cats-link#category-add-task").click(function(){
         setupMessage("добавление", "добавить таск в категорию", [
             {
                 type: "label",
@@ -141,18 +141,17 @@ $(document).ready(function(){
                 label: "отменить",
                 onClick: closeMessage
             }
-        ], "/addtask/" + activeLink.attr('id').substring(9) + "/")
+        ], "/addtask/" + taskBlock.data("task_id") + "/")
         openMessage()
     })
 
-    categories.find(".cats-link#category-delete-task").click(function(e){
-        var activeTask = frame.find(".content.active")
+    adminCategories.children(".cats-link#category-delete-task").click(function(e){
         setupMessage("удаление", "вы точно уверены?", [
             {
                 type: "linkbtn",
                 id: "yes-btn",
                 label: "да",
-                link: "/tasks/" + activeTask.data("task").substring(7) + "/delete/"
+                link: "/tasks/" + taskBlock.data("task_id") + "/delete/"
             },
             {
                 type: "btn",
@@ -164,11 +163,10 @@ $(document).ready(function(){
         openMessage()
     })
 
-    categories.find(".cats-link#category-edit-task").click(function(){
-        var activeTask = frame.find(".content.active")
-        var title = activeTask.find(".task-title")
-        var description = activeTask.find(".task-description")
-        var score = activeTask.find(".task-score")
+    adminCategories.children(".cats-link#category-edit-task").click(function(){
+        var title = taskContent.find(".task-title")
+        var description = taskContent.find(".task-description")
+        var score = taskContent.find(".task-score")
 
         setupMessage("изменение", "изменить таск", [
             {
@@ -230,7 +228,7 @@ $(document).ready(function(){
                 label: "отменить",
                 onClick: closeMessage
             }
-        ], "/tasks/" + activeTask.data("task").substring(7) + "/edit/")
+        ], "/tasks/" + taskBlock.data("task_id") + "/edit/")
         openMessage()
     })
 
@@ -243,18 +241,14 @@ $(document).ready(function(){
     }
 
     /** Установка сообщения для администраторских нужд */
-    function setupMessage(_title, _text, ctrls, action) {
-        var title = message.children(".message-title")
-        var text = message.children(".message-text")
-        var form = message.children("#message-form").empty();
-        form.attr("enctype", "")
-        
-        if (action) form.attr("action", action)
+    function setupMessage(_title, _text, _ctrls, _action) {
+        message.children(".message-title").text(_title)
+        message.children(".message-text").text(_text)
 
-        title.text(_title)
-        text.text(_text)
+        var form = message.children("#message-form").empty().removeAttr("enctype");
+        if (_action) form.attr("action", _action)
 
-        ctrls.forEach(ctrl => {
+        _ctrls.forEach(ctrl => {
             var label = ctrl.label
             var id = ctrl.id
             var link = ctrl.link
@@ -275,7 +269,7 @@ $(document).ready(function(){
                     control = $("<a id=\"" + id + "\" class=\"btn-inline ctrl-" + id + "\">" + label + "</a>").click(onClick)
                     break
                 case "input":
-                    control = $("<input name=\"" + name + "\" class=\"ctrl-" + name + "\" type=\"text\" required=\"required\"" + (value ? " value=\"" + value + "\"" : "") + " />")
+                    control = $("<input name=\"" + name + "\" class=\"ctrl-" + name + "\" type=\"text\"" + (value ? " value=\"" + value + "\"" : "") + " />")
                     break
                 case "textarea":
                     control = $("<textarea name=\"" + name + "\" class=\"ctrl-" + name + "\">" + (value ? value : "") + "</textarea>")
@@ -285,7 +279,7 @@ $(document).ready(function(){
                     break
                 case "file":
                     form.attr("enctype", "multipart/form-data")
-                    control = $("<input type=\"file\" name=\"" + name + "\" class=\"ctrl-" + name + "\" />")
+                    control = $("<label class=\"custom-file-upload\"><input type=\"file\" name=\"" + name + "\" class=\"ctrl-" + name + "\" />" + $(".lang-admin").data("add_file") + "</label>")
                     break
             }
 

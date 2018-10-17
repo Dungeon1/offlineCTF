@@ -1,24 +1,22 @@
-{% for task in cat %}
-    {% if not task.score %}
-        <div class="category-name">
-            {{ task.name }}
-        </div>
-        <div class="tasks-table">
-            <a class="task-link tasks-info row">
-                <span class="column col-3">[название]</span>
-                <span class="column col-3">[описание]</span>
-                <span class="column col-2">[очки]</span>
-                <span class="column col-4">[решено]</span>
-            </a>
-    {% else %}
-        <a class="task-link row" id="task-{{ task.category }}-{{ task.id }}">
-            <span class="task-name column col-3">{{ task.name }}</span>
-            <span class="task-description column col-3">{{ task.desc[0:25] }}...</span>
-            <span class="task-score column col-2">{{ task.score }}</span>
-            <span class="task-complete column col-4">
-                <span class="complete-left">[</span><span class="complete-value">{{ task.percentComplete }}</span><span class="complete-right">]</span>
-                <div class="complete-background" style="width: calc({{ task.percentComplete }}px - 24px)"></div>
-            </span>
-        </a>
-    {% endif %}
+<div class="category-name">
+    {{ cat.name }}
+</div>
+<div class="table tasks-table">
+    <a class="row-link row-info row">
+        <span class="column col-3">[{{ lang.tasks.name }}]</span>
+        <span class="column col-3">[{{ lang.tasks.description }}]</span>
+        <span class="column col-2">[{{ lang.tasks.score }}]</span>
+        <span class="column col-4">[{{ lang.tasks.solved }}]</span>
+    </a>
+{% for task in tasks if task.category == cat.id %}
+    <a class="row-link row" data-task_category="{{ task.category }}" data-task_id="{{ task.id }}">
+        <span class="task-name column col-3">{{ task.name }}</span>
+        <span class="task-description column col-3">{{ task.desc[0:25] }}...</span>
+        <span class="task-score column col-2">{{ task.score }}</span>
+        <span class="task-scale column col-4">
+            <span class="scale-left">[</span><span class="scale-number">{{ task.percentComplete|round(1, 'floor') }}%</span><span class="scale-right">]</span>
+            <div class="scale-value" style="width: calc(calc(100% - 24px) * {{ task.percentComplete }} / 100)"></div>
+        </span>
+    </a>
 {% endfor %}
+</div>
