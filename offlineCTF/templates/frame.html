@@ -1,91 +1,96 @@
 {% include "header.html" %}
 <div class="frame">
-    {% if page %}  
-        {% include page %}
+    {% if page %}
+    {% include page %}
     {% else %}
     <div class="row">
-        <div class="column col-3 cats-col">
+        <div class="column col-3 column-categories">
             <div class="categories">
                 <ul class="cats-list">
                     {% if cats %}
-                        {% for cat in cats %}
-                        <li class="cats-btn category-simple">
-                            <a id="category-{{ cat.id }}" class="cats-link{% if cat == cats[0] %} active{% endif %}">{{ cat.name }}</a>
-                        </li>
-                        {% endfor %}
-                        {% if url == "/tasks" %}
-                        <li class="cats-btn category-task">
-                            <a id="category-back" class="cats-link ">../</a>
-                        </li>
-                        {% endif %}
-                        {% if user.isAdmin and url == "/tasks" %}
-                            <li class="cats-btn"><a class="cats-link blocked">--------</a></li>
-                            <li class="cats-btn category-cats">
-                                <a id="category-add" class="cats-link blocked">добавить.exe</a>
-                            </li>
-                            <li class="cats-btn category-cats">
-                                <a id="category-edit" class="cats-link blocked">изменить.exe</a>
-                            </li>
-                            <li class="cats-btn category-cats">
-                                <a id="category-delete" class="cats-link blocked">удалить.exe</a>
-                            </li>
-                            <li class="cats-btn category-cats">
-                                <a id="category-add-task" class="cats-link blocked">добавить_таск.exe</a>
-                            </li>
-                            <!-- ui for task content -->
-                            <li class="cats-btn category-task">
-                                <a id="category-edit-task" class="cats-link blocked">изменить_таск.exe</a>
-                            </li>
-                            <li class="cats-btn category-task">
-                                <a id="category-delete-task" class="cats-link blocked">удалить_таск.exe</a>
-                            </li>
-                        {% endif %}
-                        
-                        <li class="cats-btn"><a class="cats-link blocked">--------</a></li>
+                    {% for cat in cats %}
+                    <li class="cats-btn category-simple">
+                        <a id="category-{{ cat.id }}" class="cats-link{% if cat == cats[0] %} active{% endif %}">{{
+                            cat.name }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if url == "/tasks" %}
+                    <li class="cats-btn category-back">
+                        <a id="category-back" class="cats-link ">../</a>
+                    </li>
+                    {% endif %}
+                    {% if user.isAdmin and url == "/tasks" %}
+                    <li class="cats-btn"><a class="cats-link blocked">--------</a></li>
+                    <li class="cats-btn category-admin">
+                        <a id="category-add" class="cats-link admin-cats blocked">добавить.exe</a>
+                    </li>
+                    <li class="cats-btn category-admin">
+                        <a id="category-edit" class="cats-link admin-cats blocked">изменить.exe</a>
+                    </li>
+                    <li class="cats-btn category-admin">
+                        <a id="category-delete" class="cats-link admin-cats blocked">удалить.exe</a>
+                    </li>
+                    <li class="cats-btn category-admin">
+                        <a id="category-add-task" class="cats-link admin-cats blocked">добавить_таск.exe</a>
+                    </li>
+                    <!-- ui for task content -->
+                    <li class="cats-btn category-admin admin-task">
+                        <a id="category-edit-task" class="cats-link admin-tasks blocked">изменить_таск.exe</a>
+                    </li>
+                    <li class="cats-btn category-admin admin-task">
+                        <a id="category-delete-task" class="cats-link admin-tasks blocked">удалить_таск.exe</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="cats-btn"><a class="cats-link blocked">--------</a></li>
                     {% endif %}
                     {% if not user %}
-                        <li class="cats-btn">
-                            <a id="category-login" class="cats-link">войти.exe</a>
-                        </li>
-                        <li class="cats-btn">
-                            <a id="category-register" class="cats-link">регистрация.exe</a>
-                        </li>
+                    <li class="cats-btn category-simple">
+                        <a id="category-login" class="cats-link">войти.exe</a>
+                    </li>
+                    <li class="cats-btn category-simple">
+                        <a id="category-register" class="cats-link">регистрация.exe</a>
+                    </li>
                     {% else %}
-                        <li class="cats-btn">
-                            <a id="category-logout" class="cats-link blocked" href="/logout">выйти.exe</a>
-                        </li>
+                    <li class="cats-btn">
+                        <a id="category-logout" class="cats-link blocked" href="/logout">выйти.exe</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
-        <div class="column col-9 content-col">
-            {% for cat in cats if cat.template if not cat.page_id == 2 %}
-                <div class="content{% if cat == cats[0] %} active{% endif %}" data-cat="category-{{ cat.id }}">
-                    {% include "categories/"+ cat.template %}
-                </div>
+        <div class="column col-9 column-contents">
+            {% for cat in cats if cat.template and not cat.page_id == 2 %}
+            <div class="content{% if cat == cats[0] %} active{% endif %}" data-cat="category-{{ cat.id }}">
+                {% include "categories/"+ cat.template %}
+            </div>
             {% endfor %}
-            {% for cat in grid %}
-                <div class="content content-tasks{% if cat[0] == cats[0] %} active{% endif %}" data-cat="category-{{ cat[0].id }}">
-                    {% include "categories/tasks.html" %}
-                    </div> 
-                </div>
-                {% for task in cat %}
-                <div class="content content-task" data-task="task-{{ task.category }}-{{ task.id }}">
-                    {% include "categories/task.html" %}
-                </div>
-                {% endfor %}
+            {% for cat in cats if cat.page_id == 2 and url == "/tasks" %}
+            <div class="content content-tasks{% if cat == cats[0] %} active{% endif %}" data-cat="category-{{ cat.id }}">
+                {% include "categories/tasks.html" %}
+            </div>
             {% endfor %}
+            {% if url == "/tasks" %}
+            <div class="lang-tasks" data-success="{{ lang.task.success }}" data-failure="{{ lang.task.failure }}" data-already_solved="{{ lang.task.already_solved }}" data-flag="{{ lang.task.flag }}" data-send="{{ lang.task.send }}" data-already_solved_short="{{ lang.task.already_solved_short }}"></div>
+            <div class="content content-task">
+                {% include "categories/task.html" %}
+            </div>
+            {% endif %}
             {% if not user %}
-                <div class="content" data-cat="category-login">
-                    {% include "categories/login.html" %}
-                </div>
-                <div class="content" data-cat="category-register">
-                    {% include "categories/register.html" %}
-                </div>
+            <div class="content" data-cat="category-login">
+                {% include "categories/login.html" %}
+            </div>
+            <div class="content" data-cat="category-register">
+                {% include "categories/register.html" %}
+            </div>
             {% endif %}
         </div>
     </div>
     {% endif %}
 </div>
-{% include "footer.html" %}
 
+<script>
+    var tasks_info = null
+    {% if url == "/tasks" %} tasks_info = {{ jsontasks | safe }}{% endif %}
+</script>
+{% include "footer.html" %}

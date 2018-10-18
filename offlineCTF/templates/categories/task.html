@@ -1,32 +1,17 @@
-<h1 class="task-title">{{ task.name }}</h1>
-<h5>(<b class="task-score">{{ task.score }}</b> points, 
-		{{ lang.task.solution_format  }})</h5>
-	<p>
-		<b>{{ lang.task.description }}: </b>
-		{% if not task.desc %}
-			{{ lang.task.no_description }}
-		{% else %}
-			<p class="task-description">{{ task.desc|safe }}</p>
-		{% endif %}
-	</p>
-{% if task.file %}
-	<p>
-		<b>{{ lang.task.attachment }}: </b>
-		<a href="{{ url_for('static', 
-			filename='files/'+task.file) }}" class="task-file">{{ task.file }}</a>
-	</p>
-{% endif %}
-awdawwafawwfwf{{ task.isDone }}
-	<input class="flag-input" type="text" class="form-control" 
-{% if task.isDone %} disabled="disabled" {% endif %}
-		placeholder="{% if task.isDone %}{{ lang.task.success }}{% 
-		else %}{{ lang.task.placeholder }}{% endif %}">
-	<button {% if task.isDone %}disabled{% endif %} class="flag-submission" 
-		type="button" class="btn btn-block 
-			{% if task.isDone %}
-				btn-success
-			{% else %}
-				btn-primary
-			{% endif %}">{{ lang.task.submit }}</button>
+<div class="task-block" data-task_id=""></div>
+<h1 class="task-title"></h1>
+<h5>(<b class="task-score"></b> {{ lang.task.points }}, 
+	<b class="task-solved"></b> {{ lang.task.solved_by }})</h5>
+<p>
+	<b>{{ lang.task.description }}: </b>
+	<span class="task-description"></span>
+</p>
 
+<p>
+	<b>{{ lang.task.attachment }}: </b>
+	<a href="" class="task-file" target="_blank" rel="noopener noreferrer"></a>
+</p>
+
+<input class="flag-input" type="text" class="form-control" placeholder="{{ lang.task.placeholder }}">
+<button class="flag-submission" type="button" class="btn btn-block">{{ lang.task.submit }}</button>
 
