@@ -2,7 +2,9 @@
 
 <div class="authorization-content">
 	<form class="authorization-form authorization-form-login" action="/login" role="form" method="post">
-		<h1>{{ lang.authorization.enter }}</h1>
+		<div class="category-name">
+			{{ lang.authorization.enter }}
+		</div>
 		<div class="form-group">
 			<label>{{ lang.authorization.login }}:</label>
 			<input type="text" placeholder="User" class="form-control" name="user">
@@ -12,8 +14,10 @@
 			<input type="password" placeholder="Password" class="form-control" name="password">
 		</div>	
 		<button type="submit" name="submit" class="btn btn-success">{{ lang.authorization.login }}</button> 
-		<button type="button" name="forgot" class="btn btn-success forgot-password">{{ lang.authorization.forgot_password }}</button>
 	</form>
+	<div class="category-name">
+		{{ lang.authorization.forgot_password }}
+	</div>
 	<form class="form authorization-form-forgot" action="/forgot/submit" role="form" method="post">
 		<div class="form-group">
 			<label>{{ lang.authorization.login }}:</label>

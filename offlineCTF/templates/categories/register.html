@@ -1,5 +1,7 @@
 <form class="authorization-form authorization-form-register" role="form" action="/register/submit" method="post" enctype="multipart/form-data">
-    <h1>{{ lang.authorization.registration }}</h1>
+    <div class="category-name">
+        {{ lang.authorization.registration }}
+    </div>
     <label><p align="justify">{{ lang.authorization.registration_description }}</p></label>
     <div class="contener_logo_pas">
         <div class="login_cont">
@@ -15,7 +17,7 @@
         <div class="contener_email_reg">
             <div>
                 <label>{{ lang.authorization.email }}:</label>
-                <input type="text" class="form-control" name="email" required="required">
+                <input type="email" class="form-control" name="email" required="required">
             </div>
         </div>
         <div>

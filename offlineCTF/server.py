@@ -107,6 +107,13 @@ def get_cats(url):
 
     return list()
 
+@app.errorhandler(404)
+def page_not_found(e):
+    user = get_user()
+    menu = get_main_menu()
+    
+    return render_template('frame.html', lang=lang, page='error.html',
+                             message=lang['error']['404'], user=user, menu=menu), 404
 
 @app.route('/error/<msg>')
 def error(msg):

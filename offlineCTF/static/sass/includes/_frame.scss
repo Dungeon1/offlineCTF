@@ -121,6 +121,10 @@
             text-align: left;
         }
 
+        .category-name {
+            margin-bottom: 20px;
+        }
+
         &.active {
             display: block;
         }
@@ -137,3 +141,24 @@
     }
 }
 
+.content {
+    .authorization-content, .authorization-form-register {
+        .contener_logo_pas {
+            float: left;
+            margin-right: 20px;
+            width: calc(50% - 20px);
+        }
+        
+        .g-recaptcha {
+            margin-bottom: 10px;
+        }
+        
+        .form-control, .btn {
+            margin-bottom: 10px;
+        }
+    }
+    
+    .authorization-form-login {
+        margin-bottom: 20px;
+    }
+}
