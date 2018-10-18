@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css"/>
-        <title>{{ lang.frame.title }}</title>
-    </head>
-    <body>
-    <div class="wrapper">
-    <header>
-        <div class="container">
-            <nav class="navigation parent-bg">
-                <ul class="nav-list">
-                    {% for menu_page in menu %}
-                    <li class="nav-btn">
-                        <a href="{{ menu_page.url }}" class="nav-link w-bg{% if url == menu_page.url %} active{% endif %}">{{ menu_page.name }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <ul class="right nav-list">
-                    <li class="nav-btn">
-                        <!--<a id="nav-login" class="nav-link mr-20 w-bg">Войти</a>-->
-                        <span id="nav-clock" class="nav-item">00:00:00</span>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    
-    <div class="container main-frame">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" />
+    <title>{{ lang.main.title }}</title>
+</head>
+
+<body>
+    <div class="wrapper main-wrapper">
         {% if user.isAdmin %}
-            <div class="ui-message" id="admin-message">
-                <p class="message-title">Title</p>
-                <p class="message-text">Text</p>
-                <form action="" id="message-form" class="message-form" method="POST"></form>
-            </div>
+        <div class="admin-message" id="admin-message">
+            <div class="lang-admin" data-add_file="{{ lang.admin.add_file }}"></div>
+            <p class="message-title">Title</p>
+            <p class="message-text">Text</p>
+            <form action="" id="message-form" class="message-form" method="POST"></form>
+        </div>
         {% endif %}
+        <header>
+            <div class="container">
+                <nav class="navigation parent-bg">
+                    <ul class="nav-list">
+                        {% for menu_page in menu %}
+                        <li class="nav-btn">
+                            <a href="{{ menu_page.url }}" class="nav-link w-bg{% if url == menu_page.url %} active{% endif %}">{{
+                                menu_page.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <ul class="right nav-list">
+                        <li class="nav-btn">
+                            <!--<a id="nav-login" class="nav-link mr-20 w-bg">Войти</a>-->
+                            <span id="nav-clock" class="nav-item">00:00:00</span>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <div class="container main-frame">
+            

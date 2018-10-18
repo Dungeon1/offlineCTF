@@ -3,13 +3,15 @@ body {
     font-weight: 200;
     font-size: 24px;
 
+    overflow: hidden;
+
     background: black;
     color: white;
 
     cursor: default;
     
     ::selection {
-        background: $btn-hovered;
+        background: $background-selection
     }
 
     .mr-10 {
@@ -31,13 +33,54 @@ a {
     }
 }
 
+input[type=text], input[type=password], input[type=email]{
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid grey;
+    outline: 0;
+    font-size: 24px;
+
+    color: white;
+    background: black;
+}
+
+input[type=file] {
+    display: none;
+}
+
+.custom-file-upload {
+    text-align: center;
+}
+
+button, input[type=submit], .custom-file-upload {
+    display: inline-block;
+    background: #000000;
+    border: 1px solid $btn-border-color;
+    outline: 0;
+    padding: 10px 15px;
+
+    color: $color-content;
+
+    cursor: pointer;
+
+    &:hover {
+        background: $btn-hovered;
+    }
+
+    &:disabled {
+        &:hover {
+            background: #000000
+        }
+    }
+}
+
 .wrapper {
     margin: 50px 0;
 }
 
 .container {
-    margin: auto;
-    width: 1050px;
+    margin: 0 20px;
+    width: 1010px;
 }
 
 .row {

@@ -1,0 +1,50 @@
+.admin-message {
+    position: absolute;
+    z-index: 1;
+    right: -300px;
+
+    width: 300px;
+    padding: 15px;
+    box-sizing: border-box;
+
+    border: 2px dotted grey;
+    background: black;
+
+    transition: right 0.5s ease;
+
+    &.active {
+        right: 50px;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .message-form {
+        label {
+            display: block;
+            color: $color-content;
+        }
+
+        .btn-inline {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    }
+
+    
+    .ctrl-submit-btn {
+        background: transparent;
+        border: 0;
+        outline: none;
+        color: white;
+        padding: 0;
+
+        cursor: pointer;
+
+        &:hover, &.active {
+            background: $btn-hovered;
+        }
+    }
+
+}

@@ -1,0 +1,26 @@
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+
+    border-top: 1px solid $crt-border-color;
+
+    .cd-path {
+        margin-top: 15px;
+        margin-bottom: 15px;
+
+        .text-path, .text-os {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .text-path {
+            
+        }
+
+        .text-os {
+            float: right
+            
+        }
+    }
+}
