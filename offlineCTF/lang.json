@@ -74,7 +74,12 @@
             "title": "настройки",
             "crt_animation": "CRT анимация",
             "turn_on": "Включить",
-            "turn_off": "Выключить"
+            "turn_off": "Выключить",
+            "butterfly": "Режим бабочки",
+            "butterfly_button": "Попробовать",
+            "superhot": "SUPERHOT MODE",
+            "superhot_button": "Решить",
+            "press_space": "Жми ПРОБЕЛ!"
         },
         "footer": {
             "disk": "C:\\",

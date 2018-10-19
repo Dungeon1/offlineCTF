@@ -9,12 +9,26 @@ $crt-border-color: rgba(255, 255, 255, 0.8);
 $btn-border-color: rgba(255, 255, 255, 0.5);
 
 $main-font: Fixedsys;
+$roboto-thin: RobotoThin;
+$roboto-bold: RobotoBold;
+
+@font-face {
+	font-family: RobotoThin;
+	src: url(../fonts/Robotothin.ttf);
+}
+
+@font-face {
+	font-family: RobotoBold;
+	src: url(../fonts/Robotobold.ttf);
+}
 
 /** Шрифты **/
 @font-face {
 	font-family: Fixedsys;
 	src: url(../fonts/FSEX300.ttf);
 }
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,700');
 
 /** Mixins **/
 @mixin clearfix {

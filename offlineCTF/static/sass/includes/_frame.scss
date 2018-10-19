@@ -162,3 +162,50 @@
         margin-bottom: 20px;
     }
 }
+
+.content {
+    .settings {
+        .settings-section {
+            margin-bottom: 10px;
+        }
+
+        .control-title {
+            margin-bottom: 5px;
+        }
+
+        .superhot_button {
+            position: relative;
+        }
+    }
+}
+
+.SUPERHOT {
+    font-family: $roboto-thin;
+    font-weight: 100;
+    font-size: 350px;
+
+    text-shadow: 0 0 50px rgba(100, 232, 255, 0.699);
+
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(1.5, 1.5);
+    transition: transform 0.5s ease-out;
+
+    margin: 0;
+
+    text-transform: uppercase;
+    
+    &.hot {
+        font-family: $roboto-bold;
+    }
+
+    &.active {
+        transform: translate(-50%, -50%) scale(1, 1);
+    }
+
+    &.hidden {
+        display: none;
+    }
+
+    z-index: 1;
+}
