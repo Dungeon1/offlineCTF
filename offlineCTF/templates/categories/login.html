@@ -1,33 +1,5 @@
 <script src='https://www.google.com/recaptcha/api.js'></script>
 
-<div class="authorization-box">
-	
-	<div class="authorization-content">
-		<form class="authorization-form authorization-form-login" action="/login" role="form" method="post">
-			<h1>Войти в аккаунт</h1>
-			<br/>
-			<div class="form-group">
-				<label>Название команды:</label>
-				<input type="text" placeholder="User" class="form-control" name="user">
-			</div>
-		<br/>
-			<div class="form-group">
-				<label>Пароль:</label>	
-				<input type="password" placeholder="Password" class="form-control" name="password">
-			</div>
-			<br/>	
-			<button type="submit" name="submit" class="btn btn-success">{{ lang.frame.login }}</button> 
-			<button type="button" name="forgot" class="btn btn-success forgot-password">{{ lang.frame.forgot_password }}</button>
-		</form>
-		<form class="form authorization-form-forgot" action="/forgot/submit" role="form" method="post">
-			<div class="form-group">
-				<label>Логин:</label>
-				<input type="text" placeholder="User" class="form-control" name="user">
-			</div>
-			<button type="submit" name="submit" class="btn btn-success">{{ lang.frame.recover_password }}</button> 
-		</form>
-		
-
 <div class="authorization-content">
 	<form class="authorization-form authorization-form-login" action="/login" role="form" method="post">
 		<div class="category-name">
@@ -45,7 +17,6 @@
 	</form>
 	<div class="category-name">
 		{{ lang.authorization.forgot_password }}
-
 	</div>
 	<form class="form authorization-form-forgot" action="/forgot/submit" role="form" method="post">
 		<div class="form-group">
