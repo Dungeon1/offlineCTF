@@ -1,6 +1,16 @@
-<div id="settings">
-    <div class="lang-settings" data-turn_off="{{ lang.settings.turn_off }}" data-turn_on="{{ lang.settings.turn_on }}"></div>
+<div id="settings" class="settings">
+    <div class="lang-settings" data-turn_off="{{ lang.settings.turn_off }}" data-turn_on="{{ lang.settings.turn_on }}"  data-press_space="{{ lang.settings.press_space }}" data-superhot_button="{{ lang.settings.superhot_button }}"></div>
     <div class="category-name">{{ lang.settings.title }}</div>
-    <p>{{ lang.settings.crt_animation }}</p>
-    <button class="checkbox crt-animation">{{ lang.settings.turn_off }}</button>
+    <div class="settings-section">
+        <p class="control-title">{{ lang.settings.crt_animation }}:</p>
+        <button class="checkbox crt-animation">{{ lang.settings.turn_off }}</button>
+    </div>
+    <div class="settings-section">
+        <p class="control-title">{{ lang.settings.butterfly }}:</p>
+        <button class="checkbox butterfly_button">{{ lang.settings.butterfly_button }}</button>
+    </div>
+    <div class="settings-section">
+        <p class="control-title">{{ lang.settings.superhot }}:</p>
+        <button class="checkbox superhot_button">{{ lang.settings.superhot_button }}</button>
+    </div>
 </div>

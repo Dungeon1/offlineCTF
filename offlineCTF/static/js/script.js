@@ -195,5 +195,60 @@ $(document).ready(function () {
                 Cookies.set("crt_animation", "false")
             }
         })
+
+        var butterflyButton = settings.find(".butterfly_button")
+        var i = 0;
+
+        butterflyButton.click(function(){
+            i++;
+
+            if (i > 3) {
+                window.location = "https://www.youtube.com/watch?v=6FEDrU85FLE"
+            }
+        })
+
+        var superhotButton = settings.find(".superhot_button")
+        var superhotState = 0
+        var hotOGG = new Audio("sounds/hot.ogg")
+        var superOGG = new Audio("sounds/super.ogg")
+        var superHotText = $('<h1 class="SUPERHOT"></h1>').appendTo('body')
+        var time = null
+        var works = false
+
+        superhotButton.click(function(){
+            if (works) {
+                superhotButton.text($(".lang-settings").data("superhot_button"))
+            } else {
+                superhotButton.text($(".lang-settings").data("press_space"))
+            }
+            works = !works
+        })
+
+        $('body').keyup(function(e){
+            if(e.keyCode != 32 || !works) return
+
+            clearTimeout(time)
+
+            superHotText.removeClass('active').removeClass("hidden")
+
+            if (superhotState == 0) {
+                superOGG.play()
+                superhotState = 1
+
+                superHotText.text("Super").removeClass("hot")
+            } else {
+                hotOGG.play()
+                superhotState = 0
+                superHotText.text("Hot").addClass("hot")
+            }
+
+            setTimeout(function(){
+                superHotText.addClass('active')
+            }, 100)
+
+            time = setTimeout(function(){
+                superHotText.addClass("hidden")
+            }, 1000)
+        })
     }
 })
