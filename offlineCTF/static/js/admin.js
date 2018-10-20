@@ -84,6 +84,7 @@ $(document).ready(function(){
     })
 
     adminCategories.children(".cats-link#category-add-task").click(function(){
+        var activeLink = simpleCategories.children(".cats-link.active")
         setupMessage("добавление", "добавить таск в категорию", [
             {
                 type: "label",
@@ -141,7 +142,7 @@ $(document).ready(function(){
                 label: "отменить",
                 onClick: closeMessage
             }
-        ], "/addtask/" + taskBlock.data("task_id") + "/")
+        ], "/addtask/" + activeLink.attr("id").substring(9) + "/")
         openMessage()
     })
 
