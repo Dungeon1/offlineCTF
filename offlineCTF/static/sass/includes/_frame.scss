@@ -12,6 +12,10 @@
     border: 2px solid $crt-border-color;
     border-top: 1px solid $crt-border-color;
     border-bottom: 1px solid $crt-border-color;
+
+    @media screen and (max-height: 722px) {
+        height: calc(100% - 50px);
+    }
 }
 
 .main-frame {

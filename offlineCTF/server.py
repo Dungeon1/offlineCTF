@@ -197,7 +197,7 @@ def checkRecaptcha(response, secretkey):
     except:
         return False
 
-
+"""
 @app.route('/forgot/submit', methods=['POST'])
 def forgot_submit():
     db = dataset.connect(config['db'])
@@ -227,6 +227,7 @@ def forgot_submit():
     user['password'] = generate_password_hash(password)
 
     return redirect('/')
+"""
 
 
 @app.route('/register/submit', methods=['POST', 'GET'])
