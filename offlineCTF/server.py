@@ -560,4 +560,4 @@ db = dataset.connect(config['db'])
 
 if __name__ == '__main__':
     app.run(host=config['host'], port=config['port'],
-            debug=config['debug'], threaded=True)
+            debug=config['debug'], threaded=False)
