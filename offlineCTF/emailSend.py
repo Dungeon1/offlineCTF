@@ -20,7 +20,7 @@ def workingWithEmail(username, password, username_email, email, email_password, 
     print('Работаем с почтой')
 
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = 'Заголовок письма'
+    msg['Subject'] = 'Вы успешно зарегистрированы!'
     msg['From'] = email
     msg['To'] = username_email
     msg.attach(final_message)
