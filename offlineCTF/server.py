@@ -48,8 +48,6 @@ def admin_required(f):
 
 
 def get_user():
-    db = dataset.connect(config['db'])
-
     login = 'user_id' in session
     if login:
         return db['users'].find_one(id=session['user_id'])
@@ -58,8 +56,6 @@ def get_user():
 
 
 def get_task(tid):
-    db = dataset.connect(config['db'])
-
     task = db.query("SELECT t.*, c.name cat_name FROM tasks t JOIN categories c on c.id = t.category WHERE t.id = :tid",
                     tid=tid)
 
@@ -67,8 +63,6 @@ def get_task(tid):
 
 
 def get_flags():
-    db = dataset.connect(config['db'])
-
     flags = db.query('''select f.task_id from flags f
         where f.user_id = :user_id''',
                      user_id=session['user_id'])
@@ -76,7 +70,6 @@ def get_flags():
 
 
 def get_total_completion_count():
-    db = dataset.connect(config['db'])
     c = db.query("SELECT t.id, count(t.id) count FROM tasks t JOIN flags f, users u ON t.id = f.task_id AND u.id = f.user_id WHERE u.isHidden = 0 GROUP by t.id;")
 
     res = {}
@@ -87,7 +80,6 @@ def get_total_completion_count():
 
 
 def get_main_menu():
-    db = dataset.connect(config['db'])
     menu = list(db.query("SELECT * FROM pages"))
 
     if menu:
@@ -97,7 +89,6 @@ def get_main_menu():
 
 
 def get_cats(url):
-    db = dataset.connect(config['db'])
 
     cats = list(db.query(
         "SELECT cats.* FROM categories cats, pages p WHERE cats.page_id = p.id AND p.url == '" + url + "'"))
@@ -107,13 +98,15 @@ def get_cats(url):
 
     return list()
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     user = get_user()
     menu = get_main_menu()
-    
+
     return render_template('frame.html', lang=lang, page='error.html',
-                             message=lang['error']['404'], user=user, menu=menu), 404
+                           message=lang['error']['404'], user=user, menu=menu), 404
+
 
 @app.route('/error/<msg>')
 def error(msg):
@@ -150,7 +143,6 @@ def noerror(msg):
 
 
 def session_login(username):
-    db = dataset.connect(config['db'])
     user = db['users'].find_one(username=username)
     session['user_id'] = user['id']
 
@@ -165,7 +157,6 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
 
 @app.route('/login', methods=['POST'])
 def login():
-    db = dataset.connect(config['db'])
 
     from werkzeug.security import check_password_hash
 
@@ -197,10 +188,10 @@ def checkRecaptcha(response, secretkey):
     except:
         return False
 
+
 """
 @app.route('/forgot/submit', methods=['POST'])
 def forgot_submit():
-    db = dataset.connect(config['db'])
     userCount = db['users'].count()
     if datetime.datetime.today() < config['startTime'] and userCount != 0:
         return redirect('/error/not_started')
@@ -232,7 +223,6 @@ def forgot_submit():
 
 @app.route('/register/submit', methods=['POST', 'GET'])
 def register_submit():
-    db = dataset.connect(config['db'])
     userCount = db['users'].count()
     if datetime.datetime.today() < config['startTime'] and userCount != 0:
         return redirect('/error/not_started')
@@ -288,7 +278,6 @@ def register_submit():
 @login_required
 def tasks():
     # Главная страница
-    db = dataset.connect(config['db'])
     url = '/tasks'
 
     user = get_user()
@@ -332,7 +321,7 @@ def addcatsubmit():
     except KeyError:
         return redirect('/error/form')
     else:
-        db = dataset.connect(config['db'])
+
         categories = db['categories']
         categories.insert(dict(page_id=2, name=name))
         return redirect('/tasks')
@@ -346,7 +335,7 @@ def editcatsubmit(catId):
     except KeyError:
         return redirect('/error/form')
     else:
-        db = dataset.connect(config['db'])
+
         categories = db['categories']
         categories.update(dict(name=name, id=catId), ['id'])
         return redirect('/tasks')
@@ -355,7 +344,6 @@ def editcatsubmit(catId):
 @app.route('/editcat/<catId>/delete')
 @admin_required
 def deletecatsubmit(catId):
-    db = dataset.connect(config['db'])
     db['categories'].delete(id=catId)
     return redirect('/tasks')
 
@@ -372,7 +360,7 @@ def addtasksubmit(cat):
         return redirect('/error/form')
 
     else:
-        db = dataset.connect(config['db'])
+
         tasks = db['tasks']
         task = dict(
             name=name,
@@ -409,7 +397,7 @@ def edittasksubmit(tid):
         return redirect('/error/form')
 
     else:
-        db = dataset.connect(config['db'])
+
         tasks = db['tasks']
         task = tasks.find_one(id=tid)
         task['id'] = tid
@@ -449,7 +437,6 @@ def edittasksubmit(tid):
 @app.route('/tasks/<tid>/delete/')
 @admin_required
 def deletetasksubmit(tid):
-    db = dataset.connect(config['db'])
     db['tasks'].delete(id=tid)
     return redirect('/tasks')
 
@@ -457,7 +444,6 @@ def deletetasksubmit(tid):
 @app.route('/submit/<tid>/<flag>')
 @login_required
 def submit(tid, flag):
-    db = dataset.connect(config['db'])
     log_flag = open('log_flag_ip.txt', 'a')
     user = get_user()
 
@@ -501,7 +487,6 @@ def submit(tid, flag):
 @login_required
 def scoreboard():
     # Таблица рекордов
-    db = dataset.connect(config['db'])
 
     url = '/scoreboard'
 
@@ -523,7 +508,6 @@ def scoreboard():
 @app.route('/scoreboard.json')
 def scoreboard_json():
     # Получаем json с результатами всех участников
-    db = dataset.connect(config['db'])
     scores = db.query('''select u.username, ifnull(sum(f.score), 0) as score,
         max(timestamp) as last_submit from users u left join flags f
         on u.id = f.user_id where u.isHidden = 0 group by u.username
@@ -571,6 +555,8 @@ lang_str = open(config['language_file'], 'r', encoding="utf-8").read()
 lang = json.loads(lang_str)
 
 lang = lang[config['language']]
+
+db = dataset.connect(config['db'])
 
 if __name__ == '__main__':
     app.run(host=config['host'], port=config['port'],
