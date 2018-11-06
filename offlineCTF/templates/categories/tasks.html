@@ -9,7 +9,7 @@
         <span class="column col-4">[{{ lang.tasks.solved }}]</span>
     </a>
 {% for task in tasks if task.category == cat.id %}
-    <a class="row-link row" data-task_category="{{ task.category }}" data-task_id="{{ task.id }}">
+    <a class="row-link row {% if task.isDone %}done{% endif %}" data-task_category="{{ task.category }}" data-task_id="{{ task.id }}">
         <span class="task-name column col-3">{{ task.name }}</span>
         <span class="task-description column col-3">{{ task.desc[0:25] }}...</span>
         <span class="task-score column col-2">{{ task.score }}</span>

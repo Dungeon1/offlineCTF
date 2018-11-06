@@ -81,10 +81,8 @@ TWO GIANT HOLES STABBED IN THEIR FACE
                         {% endfor %}
                     </ul>
                     <ul class="right nav-list">
-                        <li class="nav-btn">
-                            <!--<a id="nav-login" class="nav-link mr-20 w-bg">Войти</a>-->
-                            <span id="nav-clock" class="nav-item">00:00:00</span>
-                        </li>
+                        <li class="nav-btn">{% if user %}<span id="user-name" class="nav-item">{{ user.username }}</span>{% endif %}</li>
+                        <li class="nav-btn"><span id="nav-clock" class="nav-item">00:00:00</span></li>
                     </ul>
                 </nav>
             </div>

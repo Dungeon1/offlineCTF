@@ -101,7 +101,6 @@ $(document).ready(function () {
                 }
             })
             lastActiveSimpleCatsLink = simpleCategories.children(".cats-link.active")
-
             
             simpleCategories.addClass("hidden")
 

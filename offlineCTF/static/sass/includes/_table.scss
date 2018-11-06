@@ -3,6 +3,10 @@
     
     .row-link {
         display: block;
+
+        &.done {
+            background: rgba(100, 1, 1, 0.589);
+        }
     }
 }
 

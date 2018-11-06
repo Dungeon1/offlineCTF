@@ -6,3 +6,16 @@
  Submit flag from: shitcoder YXdm awf awf ip: 127.0.0.1
  Submit flag from: shitcoder YXdk flag awd ip: 127.0.0.1
  Submit flag from: shitcoder ZmxhZw== flag flag ip: 127.0.0.1
+ Submit flag from: admin dGFzaw== task task ip: 127.0.0.1
+ Submit flag from: admin dGFzaw== task   task ip: 127.0.0.1
+ Submit flag from: admin dGFzayA= task   task  ip: 127.0.0.1
+ Submit flag from: admin dGFzayAg task   task   ip: 127.0.0.1
+ Submit flag from: admin c2RmICA= sdf   sdf ip: 127.0.0.1
+ Submit flag from: admin c2Rm sdf   sdf ip: 127.0.0.1
+ Submit flag from: admin c2RmIA== sdf   sdf ip: 127.0.0.1
+ Submit flag from: admin c2Rm sdf   sdf ip: 127.0.0.1
+ Submit flag from: admin c2Rm sdf   sdf ip: 127.0.0.1
+ Submit flag from: admin ZmRkZmJkZmI= fddfbdfb   fddfbdfb ip: 127.0.0.1
+ Submit flag from: admin ZmRkZmJkZmIgIA== fddfbdfb   fddfbdfb ip: 127.0.0.1
+ Submit flag from: admin dGFzayAg task task ip: 127.0.0.1
+ Submit flag from: Meony dGFzayAgIA== task task ip: 127.0.0.1
